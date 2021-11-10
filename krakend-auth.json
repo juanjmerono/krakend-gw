@@ -1,0 +1,81 @@
+{
+    "version": 2,
+    "name": "Auth API Gateway",
+    "port": 8080,
+    "cache_ttl": "3600s",
+    "timeout": "3s",
+    "endpoints": [
+        {
+            "endpoint": "/token",
+            "backend": [
+                {
+                    "host": [
+                        "http://your.backend"
+                    ],
+                    "url_pattern": "/foo",
+                    "group": "foo"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend/proxy": {
+                    "static": {
+                        "strategy": "errored",
+                        "data": {
+                            "access_token": {
+                                "aud": "http://api.um.es",
+                                "iss": "https://krakend.io",
+                                "sub": "1234567890qwertyuio",
+                                "jti": "mnb23vcsrt756yuiomnbvcx98ertyuiop",
+                                "roles": ["user"],
+                                "exp": 1735689600
+                            },
+                            "refresh_token": {
+                                "aud": "http://api.um.es",
+                                "iss": "https://krakend.io",
+                                "sub": "1234567890qwertyuio",
+                                "jti": "mnb23vcsrt756yuiomn12876bvcx98ertyuiop",
+                                "exp": 1735689600
+                            },
+                            "exp": 1735689600
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "endpoint": "/jwk",
+            "backend": [
+                {
+                    "host": [
+                        "http://your.backend"
+                    ],
+                    "url_pattern": "/foo",
+                    "group": "foo"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend/proxy": {
+                    "static": {
+                        "strategy": "errored",
+                        "data": {
+                            "keys": [
+                                {
+                                    "kty": "oct",
+                                    "alg": "A128KW",
+                                    "k": "GawgguFyGrWKav7AX4VKUg",
+                                    "kid": "sim1"
+                                },
+                                {
+                                    "kty": "oct",
+                                    "k": "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+                                    "kid": "sim2",
+                                    "alg": "HS256"
+                                }
+                            ]                            
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

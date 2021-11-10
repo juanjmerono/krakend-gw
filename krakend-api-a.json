@@ -1,0 +1,34 @@
+{
+    "version": 2,
+    "name": "UMU API Gateway",
+    "port": 8080,
+    "cache_ttl": "3600s",
+    "timeout": "3s",
+    "endpoints": [
+        {
+            "endpoint": "/apia",
+            "backend": [
+                {
+                    "host": [
+                        "http://your.backend"
+                    ],
+                    "url_pattern": "/foo",
+                    "group": "foo"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend/proxy": {
+                    "static": {
+                        "strategy": "errored",
+                        "data": {
+                            "oh-snap": {
+                                "id": 42,
+                                "bar": "apia"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

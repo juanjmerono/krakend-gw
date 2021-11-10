@@ -1,0 +1,92 @@
+{
+    "version": 2,
+    "name": "UMU API Gateway",
+    "port": 8080,
+    "cache_ttl": "3600s",
+    "timeout": "3s",
+    "extra_config": {
+      "github_com/devopsfaith/krakend-gologging": {
+        "level":  "DEBUG",
+        "prefix": "[KRAKEND]",
+        "syslog": false,
+        "stdout": true
+      },
+      "github_com/devopsfaith/krakend-metrics": {
+        "collection_time": "60s",
+        "proxy_disabled": false,
+        "router_disabled": false,
+        "backend_disabled": false,
+        "endpoint_disabled": false,
+        "listen_address": ":8090"
+      },
+      "github_com/devopsfaith/krakend-cors": {
+        "allow_origins": [ "http://192.168.99.100:3000", "http://localhost:3000" ],
+        "allow_methods": [ "POST", "GET" ],
+        "allow_headers": [ "Origin", "Authorization", "Content-Type" ],
+        "expose_headers": [ "Content-Length" ],
+        "max_age": "12h"
+      }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/api1/{userId}",
+            "backend": [
+                {
+                    "host": [
+                        "http://api1:8080"
+                    ],
+                    "url_pattern": "/user/{userId}"
+                }
+            ]
+        },
+        {
+            "endpoint": "/token",
+            "backend": [
+                {
+                    "host": [
+                        "http://auth:8080"
+                    ],
+                    "url_pattern": "/token"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-jose/signer": {
+                    "alg": "HS256",
+                    "kid": "sim2",
+                    "keys-to-sign": ["access_token", "refresh_token"],
+                    "jwk-url": "http://auth:8080/jwk",
+                    "disable_jwk_security": true
+                }
+            }            
+        },
+        {
+            "endpoint": "/private/api",
+            "backend": [
+                {
+                    "host": [
+                        "http://apia:8080"
+                    ],
+                    "url_pattern": "/apia",
+                    "group": "apia"
+                },
+                {
+                    "host": [
+                        "http://apib:8080"
+                    ],
+                    "url_pattern": "/apib",
+                    "group": "apib"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "HS256",
+                    "audience": ["http://api.um.es"],
+                    "roles_key": "roles",
+                    "issuer": "https://krakend.io",
+                    "roles": ["user","admin"],
+                    "jwk-url": "http://auth:8080/jwk",
+                    "disable_jwk_security": true                }
+            }
+        } 
+    ]
+}

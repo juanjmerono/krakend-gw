@@ -1,0 +1,32 @@
+version: "3"
+services:
+  gateway:
+    image: devopsfaith/krakend:1.4.1
+    ports:
+      - 8080:8080
+    volumes:
+      - ./krakend.json:/etc/krakend/krakend.json
+
+  # Public API example
+  api1:
+    image: devopsfaith/krakend:1.4.1
+    volumes:
+      - ./krakend-api1.json:/etc/krakend/krakend.json
+
+  # Auth API example
+  auth:
+    image: devopsfaith/krakend:1.4.1
+    volumes:
+      - ./krakend-auth.json:/etc/krakend/krakend.json
+
+  # Agreggate API
+  apia:
+    image: devopsfaith/krakend:1.4.1
+    volumes:
+      - ./krakend-api-a.json:/etc/krakend/krakend.json
+
+  # Agreggate API
+  apib:
+    image: devopsfaith/krakend:1.4.1
+    volumes:
+      - ./krakend-api-b.json:/etc/krakend/krakend.json
