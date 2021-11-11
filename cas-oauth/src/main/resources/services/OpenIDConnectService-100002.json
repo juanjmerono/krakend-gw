@@ -1,0 +1,9 @@
+{
+    "@class" : "org.apereo.cas.services.OidcRegisteredService",
+    "clientId": "clientid",
+    "clientSecret": "clientsecret",
+    "serviceId": "^(https|imaps|http)://.*",
+    "bypassApprovalPrompt": true,
+    "name" : "OpenIDConnectService",
+    "id" : 100002
+}

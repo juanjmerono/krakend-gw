@@ -1,0 +1,11 @@
+[
+  {
+    "issuer": "https://f764-31-222-83-252.ngrok.io/cas/oidc/.well-known/openid-configuration",
+    "name": "TestServer",
+    "client": {
+      "clientId": "clientid",
+      "clientSecret": "clientsecret",
+      "scope": "openid"
+    }
+  }
+]
