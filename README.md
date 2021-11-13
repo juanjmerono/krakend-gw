@@ -34,6 +34,8 @@ Usar en confidential client PKCE [aqui](https://dzone.com/articles/securing-web-
 
 VUEJS con Flujo PKCE [aqui](https://fawnoos.com/2020/12/20/cas63x-oidc-spa-vue-app/)
 
+GENERATE KEYSTORE: https://mkjwk.org/
+
 ## Demo
 
 La demo contiene:

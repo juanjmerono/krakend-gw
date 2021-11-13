@@ -1,5 +1,6 @@
 package com.thehecklers.ssecoidc;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,10 @@ import java.util.Map;
 
 @SpringBootApplication
 public class SsecOidcApplication {
+
+	@Value("${local.resource.url}")
+	private String resourceUrl;
+
 	@Bean
 	WebClient client(ClientRegistrationRepository regRepo,
 					 OAuth2AuthorizedClientRepository cliRepo) {
@@ -33,7 +38,7 @@ public class SsecOidcApplication {
 		fFunc.setDefaultOAuth2AuthorizedClient(true);
 
 		return WebClient.builder()
-				.baseUrl("http://resource:8080/resources")
+				.baseUrl(resourceUrl)
 				.apply(fFunc.oauth2Configuration())
 				.build();
 	}
@@ -55,7 +60,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-			.antMatchers("/")
+			.mvcMatchers("/")
 			.permitAll()
 			.anyRequest()
 			.fullyAuthenticated();

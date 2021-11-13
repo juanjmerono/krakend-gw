@@ -25,6 +25,7 @@ services:
 
   gateway:
     image: devopsfaith/krakend:1.4.1
+    command: [ "run", "-d", "-c", "/etc/krakend/krakend.json"]
     volumes:
       - ./krakend-gw.json:/etc/krakend/krakend.json
     depends_on:

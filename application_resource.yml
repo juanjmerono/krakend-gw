@@ -17,3 +17,12 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  trace:
+    http:
+      include: RESPONSE_HEADERS

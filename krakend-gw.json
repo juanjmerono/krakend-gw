@@ -20,6 +20,9 @@
                     "alg": "RS512",
                     "audience": ["http://kubernetes.docker.internal/auth/signinpop/main"],
                     "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
+                    "scopes": ["openid"],
+                    "scopes_key": "scopes",
+                    "scopes_matcher": "any",
                     "jwk-url": "http://sso:8080/cas/oidc/jwks",
                     "disable_jwk_security": true                
                 }
@@ -31,30 +34,23 @@
             "backend": [
                 {
                     "host": "http://resource:8080",
-                    "url_pattern": "/resources/something"
+                    "url_pattern": "/resources/something",
+                    "debug_host": "http://gateway:8080",
+                    "debug_url_pattern": "/__debug/resources/something"
                 }
             ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-jose/validator": {
-                    "alg": "RS512",
-                    "audience": ["http://kubernetes.docker.internal/auth/signinpop/main"],
+                    "alg": "RS256",
+                    "audience": ["http://kubernetes.docker.internal/login/oauth2/code/okta"],
                     "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
                     "scopes": ["openid"],
-                    "scopes_key": "scope",
+                    "scopes_key": "scopes",
                     "scopes_matcher": "any",
                     "jwk-url": "http://sso:8080/cas/oidc/jwks",
                     "disable_jwk_security": true                
                 }
             }        
-        },
-        {
-            "endpoint": "/gwresources/jwks",
-            "backend": [
-                {
-                    "host": "http://sso:8080",
-                    "url_pattern": "/cas/oidc/jwks"
-                }
-            ]        
-        } 
+        }
     ]
 }

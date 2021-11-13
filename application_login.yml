@@ -16,3 +16,7 @@ server:
     use-relative-redirects: true
     protocol-header: x-forwarded-proto
     remote-ip-header: x-forwarded-for
+
+local:
+  resource:
+    url: "http://resource:8080/resources"
