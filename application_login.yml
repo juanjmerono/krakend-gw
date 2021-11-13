@@ -3,11 +3,11 @@ spring:
     oauth2:
       client:
         registration:
-          okta:
+          casum:
             client-id: clientid
-            client-secret: clientsecret
+            client-secret: ----
         provider:
-          okta:
+          casum:
             issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
 
 server:

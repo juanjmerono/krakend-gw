@@ -1,5 +1,7 @@
 package com.thehecklers.ssecressvr;
 
+import java.util.Map;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
@@ -11,18 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import java.io.IOException;
-import java.util.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 public class SsecResSvrApplication {
@@ -58,29 +51,6 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 @RestController
 @RequestMapping("/resources")
 class ResourceController {
-
-    @Autowired
-	private HttpServletRequest request;
-
-    @GetMapping("/")
-	public ResponseEntity<Map<String, Object>> echoBack(@RequestBody(required = false) byte[] rawBody) throws IOException {
-
-		Map<String, String> headers = new HashMap<String, String>();
-		for (String headerName : Collections.list(request.getHeaderNames())) {
-			headers.put(headerName, request.getHeader(headerName));
-		}
-
-		Map<String, Object> responseMap = new HashMap<String,Object>();
-		responseMap.put("protocol", request.getProtocol());
-		responseMap.put("method", request.getMethod());
-		responseMap.put("headers", headers);
-		responseMap.put("cookies", request.getCookies());
-		responseMap.put("parameters", request.getParameterMap());
-		responseMap.put("path", request.getServletPath());
-		responseMap.put("body", rawBody != null ? Base64.getEncoder().encodeToString(rawBody) : null);
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMap);
-	}
 
     @GetMapping("/something")
     String getSomething() {

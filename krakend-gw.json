@@ -19,6 +19,7 @@
                 "github.com/devopsfaith/krakend-jose/validator": {
                     "alg": "RS512",
                     "audience": ["http://kubernetes.docker.internal/auth/signinpop/main"],
+                    "app-audience": ["http://kubernetes.docker.internal/login/oauth2/code/okta"],
                     "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
                     "scopes": ["openid"],
                     "scopes_key": "scopes",
@@ -31,18 +32,19 @@
         {
             "endpoint": "/gwresources/something",
             "headers_to_pass":[ "*" ],
+            "output_encoding": "no-op",
             "backend": [
                 {
-                    "host": "http://resource:8080",
-                    "url_pattern": "/resources/something",
-                    "debug_host": "http://gateway:8080",
-                    "debug_url_pattern": "/__debug/resources/something"
+                    "real_host": "http://resource:8080",
+                    "real_url_pattern": "/resources/something",
+                    "host": "http://gateway:8080",
+                    "url_pattern": "/__debug/resources/something",
+                    "encoding": "no-op"
                 }
             ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-jose/validator": {
                     "alg": "RS256",
-                    "audience": ["http://kubernetes.docker.internal/login/oauth2/code/okta"],
                     "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
                     "scopes": ["openid"],
                     "scopes_key": "scopes",
@@ -52,5 +54,5 @@
                 }
             }        
         }
-    ]
+   ]
 }
