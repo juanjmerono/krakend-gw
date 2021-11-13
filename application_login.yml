@@ -17,6 +17,6 @@ server:
     protocol-header: x-forwarded-proto
     remote-ip-header: x-forwarded-for
 
-local:
+remote:
   resource:
-    url: "http://resource:8080/resources"
+    baseurl: "http://resource:8080/resources"

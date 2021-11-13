@@ -23,7 +23,7 @@ import java.util.Map;
 @SpringBootApplication
 public class SsecOidcApplication {
 
-	@Value("${local.resource.url}")
+	@Value("${remote.resource.baseurl}")
 	private String resourceUrl;
 
 	@Bean
@@ -119,6 +119,15 @@ class OidcController {
 	String getSubjectFromRServer() {
 		return client.get()
 				.uri("/email")
+				.retrieve()
+				.bodyToMono(String.class)
+				.block();
+	}
+
+	@GetMapping("/remote")
+	String getSubjectFromR2Server() {
+		return client.get()
+				.uri("/remote")
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();

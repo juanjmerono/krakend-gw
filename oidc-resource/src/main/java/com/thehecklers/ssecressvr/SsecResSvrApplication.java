@@ -2,12 +2,9 @@ package com.thehecklers.ssecressvr;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
-import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,6 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 public class SsecResSvrApplication {
@@ -26,15 +24,6 @@ public class SsecResSvrApplication {
 
 }
 
-@Configuration
-class HttpTraceActuatorConfiguration {
-
-    @Bean
-    public HttpTraceRepository httpTraceRepository() {
-        return new InMemoryHttpTraceRepository();
-    }
-
-}
 @EnableWebSecurity
 class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
@@ -52,9 +41,15 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 @RequestMapping("/resources")
 class ResourceController {
 
+    @Value("${remote.resource.url}")
+    private String remoteUrl;
+    @Value("${SNAME}")
+    private String sName;
+    private final WebClient webClient = WebClient.builder().build();
+
     @GetMapping("/something")
     String getSomething() {
-        return "HELLO WORLD!!";
+        return "HELLO WORLD ["+sName+"]";
     }
 
     @GetMapping("/myname")
@@ -71,4 +66,15 @@ class ResourceController {
     String getSubject(@AuthenticationPrincipal Jwt jwt) {
         return jwt.getSubject();
     }
+
+    @GetMapping("/remote")
+    public String helloWebClient(@AuthenticationPrincipal Jwt jwt) {
+        //Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return webClient.get()
+                .uri(remoteUrl)
+                .headers(header -> header.setBearerAuth(jwt.getTokenValue()))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }    
 }

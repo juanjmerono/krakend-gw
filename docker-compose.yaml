@@ -50,6 +50,19 @@ services:
   resource:
     build: ./oidc-resource
     image: springboot/oidc-resource
+    environment:
+      - SNAME="SRV1"
+    volumes:
+      - ./application_resource.yml:/app/config/application.yml
+    depends_on:
+      sso:
+        condition: service_healthy
+
+  resource2:
+    build: ./oidc-resource
+    image: springboot/oidc-resource
+    environment:
+      - SNAME="SRV2"
     volumes:
       - ./application_resource.yml:/app/config/application.yml
     depends_on:
