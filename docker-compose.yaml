@@ -23,12 +23,12 @@ services:
     ports:
       - "80:80"
 
-  # gateway:
-  #   image: devopsfaith/krakend:1.4.1
-  #   ports:
-  #     - 80:8080
-  #   volumes:
-  #     - ./krakend-gw.json:/etc/krakend/krakend.json
+  gateway:
+    image: devopsfaith/krakend:1.4.1
+    volumes:
+      - ./krakend-gw.json:/etc/krakend/krakend.json
+    depends_on:
+      - resource
 
   front:
     build: ./oidc-vuejs

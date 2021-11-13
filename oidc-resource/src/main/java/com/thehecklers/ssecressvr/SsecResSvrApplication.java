@@ -28,7 +28,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .mvcMatchers("/resources/claims/**").hasAuthority("SCOPE_openid")
+                //.mvcMatchers("/resources/claims/**").hasAuthority("SCOPE_openid")
                 .mvcMatchers("/resources/email/**").hasAuthority("SCOPE_email")
                 .and().oauth2ResourceServer().jwt();
     }
@@ -39,8 +39,8 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 @RequestMapping("/resources")
 class ResourceController {
     @GetMapping("/something")
-    String getSomething() {
-        return "This is really something!";
+    String getSomething(@AuthenticationPrincipal Jwt jwt) {
+        return "HELLO: "+jwt.getSubject();
     }
 
     @GetMapping("/claims")

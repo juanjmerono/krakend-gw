@@ -12,7 +12,7 @@ var mainOidc = createOidcAuth(
     authority: 'http://kubernetes.docker.internal:8001/cas/oidc/',
     client_id: 'clientid', // 'implicit.shortlived',
     response_type: 'code',
-    scope: 'openid profile email',
+    scope: 'openid',
     // test use
     prompt: 'login',
     login_hint: 'bob'

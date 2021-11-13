@@ -4,55 +4,57 @@
     "port": 8080,
     "cache_ttl": "3600s",
     "timeout": "30s",
-    "extra_config": {
-      "github_com/devopsfaith/krakend-gologging": {
-        "level":  "DEBUG",
-        "prefix": "[KRAKEND]",
-        "syslog": false,
-        "stdout": true
-      },
-      "github_com/devopsfaith/krakend-metrics": {
-        "collection_time": "60s",
-        "proxy_disabled": false,
-        "router_disabled": false,
-        "backend_disabled": false,
-        "endpoint_disabled": false,
-        "listen_address": ":8090"
-      },
-      "github_com/devopsfaith/krakend-cors": {
-        "allow_origins": [ "http://192.168.99.100:3000", "http://localhost:3000" ],
-        "allow_methods": [ "POST", "GET" ],
-        "allow_headers": [ "Origin", "Authorization", "Content-Type" ],
-        "expose_headers": [ "Content-Length" ],
-        "max_age": "12h"
-      }
-    },
     "endpoints": [
         {
-            "endpoint": "/",
-            "output_encoding": "no-op",
-            "backend": [
-                {
-                    "host": "http://login:8080",
-                    "encoding": "no-op",
-                    "extra_config": {
-                        "github.com/devopsfaith/krakend/transport/http/client/executor": {
-                            "name": "krakend-redirect"
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "endpoint": "/resources/{any}",
+            "endpoint": "/gwresources/claims",
             "output_encoding": "no-op",
             "backend": [
                 {
                     "host": "http://resource:8080",
                     "encoding": "no-op",
-                    "url_pattern": "/resources/{any}"
+                    "url_pattern": "/resources/claims"
                 }
-            ]            
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS512",
+                    "audience": ["http://kubernetes.docker.internal/auth/signinpop/main"],
+                    "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
+                    "jwk-url": "http://sso:8080/cas/oidc/jwks",
+                    "disable_jwk_security": true                
+                }
+            }        
+        },
+        {
+            "endpoint": "/gwresources/something",
+            "headers_to_pass":[ "*" ],
+            "backend": [
+                {
+                    "host": "http://resource:8080",
+                    "url_pattern": "/resources/something"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS512",
+                    "audience": ["http://kubernetes.docker.internal/auth/signinpop/main"],
+                    "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
+                    "scopes": ["openid"],
+                    "scopes_key": "scope",
+                    "scopes_matcher": "any",
+                    "jwk-url": "http://sso:8080/cas/oidc/jwks",
+                    "disable_jwk_security": true                
+                }
+            }        
+        },
+        {
+            "endpoint": "/gwresources/jwks",
+            "backend": [
+                {
+                    "host": "http://sso:8080",
+                    "url_pattern": "/cas/oidc/jwks"
+                }
+            ]        
         } 
     ]
 }

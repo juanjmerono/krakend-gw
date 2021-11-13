@@ -1,9 +1,11 @@
 {
     "@class" : "org.apereo.cas.services.OidcRegisteredService",
+    "id" : 100002,
+    "name" : "OpenIDConnectService",
     "clientId": "clientid",
     "serviceId": "^(https|imaps|http)://.*",
     "bypassApprovalPrompt": true,
-    "scopes" : [ "java.util.HashSet", [ "profile", "openid" ] ],
-    "name" : "OpenIDConnectService",
-    "id" : 100002
+    "scopes" : [ "java.util.HashSet", [ "profile", "openid", "email" ] ],
+    "generateRefreshToken": true,
+    "jwtAccessToken": true
 }
