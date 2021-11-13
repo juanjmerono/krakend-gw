@@ -1,0 +1,13 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
+
+server:
+  forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+    protocol-header: x-forwarded-proto
+    remote-ip-header: x-forwarded-for

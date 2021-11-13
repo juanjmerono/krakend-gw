@@ -7,17 +7,50 @@ services:
       - 8001:8080
     volumes:
       - ./cas.properties:/etc/cas/config/cas.properties
+    healthcheck:
+      test: ["CMD-SHELL", "grep  -rnw '/tmp/logs/' -e 'Ready to process requests'"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
 
-  gateway:
-    image: devopsfaith/krakend:1.4.1
-    ports:
-      - 80:8080
+  proxy:
+    image: nginx:latest
     volumes:
-      - ./krakend-oauth.json:/etc/krakend/krakend.json
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - login
+      - resource
+    ports:
+      - "80:80"
 
-  client:
-    image: registry.gitlab.com/guenoledc-perso/idp-oidc-tester:latest
-    ports:
-      - 8080:80
+  # gateway:
+  #   image: devopsfaith/krakend:1.4.1
+  #   ports:
+  #     - 80:8080
+  #   volumes:
+  #     - ./krakend-gw.json:/etc/krakend/krakend.json
+
+  front:
+    build: ./oidc-vuejs
+    image: vuejs/oidc
+    depends_on:
+      sso:
+        condition: service_healthy
+
+  login:
+    build: ./oidc-login
+    image: springboot/oidc-login
     volumes:
-      - ./.idp-conf:/data/.idp-conf
+      - ./application_login.yml:/app/config/application.yml
+    depends_on:
+      sso:
+        condition: service_healthy
+
+  resource:
+    build: ./oidc-resource
+    image: springboot/oidc-resource
+    volumes:
+      - ./application_resource.yml:/app/config/application.yml
+    depends_on:
+      sso:
+        condition: service_healthy
