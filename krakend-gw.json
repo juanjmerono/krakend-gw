@@ -4,6 +4,15 @@
     "port": 8080,
     "cache_ttl": "3600s",
     "timeout": "30s",
+    "extra_config": {
+        "github_com/devopsfaith/krakend-cors": {
+          "allow_origins": [ "http://micampus.umes", "http://127.0.0.1:8080" ],
+          "allow_methods": [ "POST", "GET" ],
+          "allow_headers": ["Origin","Authorization","Content-Type"],
+          "expose_headers": ["Content-Length"],
+          "max_age": "12h"
+        }
+    },
     "endpoints": [
         {
             "endpoint": "/resources/hello",
@@ -21,7 +30,7 @@
                     "alg": "RS512",
                     "vue-audience": ["http://micampus.umes/auth/signinpop/main"],
                     "app-audience": ["http://pkce.umes/login/oauth2/code/casum"],
-                    "issuer": "https://f146-31-222-83-252.ngrok.io/cas/oidc",
+                    "issuer": "https://4357-31-222-83-252.ngrok.io/cas/oidc",
                     "scopes": ["openid"],
                     "scopes_key": "scopes",
                     "scopes_matcher": "any",
@@ -46,7 +55,7 @@
                     "alg": "RS512",
                     "vue-audience": ["http://micampus.umes/auth/signinpop/main"],
                     "app-audience": ["http://pkce.umes/login/oauth2/code/casum"],
-                    "issuer": "https://f146-31-222-83-252.ngrok.io/cas/oidc",
+                    "issuer": "https://4357-31-222-83-252.ngrok.io/cas/oidc",
                     "scopes": ["openid"],
                     "scopes_key": "scopes",
                     "scopes_matcher": "any",

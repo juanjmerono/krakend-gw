@@ -13,7 +13,7 @@
 #             issuer-uri: http://entrada.umes/cas/oidc
 #       resourceserver:
 #         jwt:
-#           issuer-uri: https://f146-31-222-83-252.ngrok.io/cas/oidc
+#           issuer-uri: https://4357-31-222-83-252.ngrok.io/cas/oidc
 
 server:
   forward-headers-strategy: native

@@ -6,10 +6,39 @@
           :key="c.key">
         <strong>{{c.key}}</strong>: {{c.value}}</li>
     </ul>
+    <input v-model="apipath" placeholder="/resources/hello"><br/>
+    <button v-on:click="miSaludo('xxxx')">Saludar Token Incorrecto</button>
+    <button v-on:click="miSaludo('')">Saludar Token Correcto</button>
+    <p>{{ saludo }}</p>
   </div>
 </template>
 <script>
 export default {
+  data: function() {
+    return { 
+      saludo: "Haz click para invocar a la API",
+      apipath: "/resources/hello"
+    }
+  },
+  methods: {
+    miSaludo: function(addBearer) {
+      let xhr = new XMLHttpRequest()
+      xhr.open("GET", "http://api.umes"+this.apipath, true)
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      const accessToken = this.user['access_token']
+      if (accessToken) {
+        xhr.setRequestHeader('Authorization', 'Bearer '+ accessToken+addBearer)
+      }
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          this.saludo = xhr.responseText || "???";
+        } else {
+          this.saludo = "Ha fallado la llamada a la API HTTP Status: "+xhr.status;
+        }
+      }
+      xhr.send()
+    }
+  },
   computed: {
     user() {
       return this.$oidc.user;
