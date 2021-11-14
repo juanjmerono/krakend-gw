@@ -1,6 +1,16 @@
 spring:
   security:
     oauth2:
+      # client:
+      #   registration:
+      #     casum:
+      #       authorization-grant-type: client_credentials
+      #       client-id: clientId0
+      #       client-secret: clientSecret
+      #   provider:
+      #     casum:
+      #       token-uri: http://kubernetes.docker.internal:8001/cas/oauth2.0/accessToken
+      #       issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
       resourceserver:
         jwt:
           issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
