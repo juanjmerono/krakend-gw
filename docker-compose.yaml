@@ -1,10 +1,13 @@
 version: "3"
 services:
-  sso:
+  entrada:
     build: ./cas-oauth
     image: apereo/cas-oauth
+    # environment:
+    #   - VIRTUAL_HOST=entrada.umes
+    #   - VIRTUAL_PORT=8080
     ports:
-      - 8001:8080
+      - "8001:8080"
     volumes:
       - ./cas.properties:/etc/cas/config/cas.properties
     healthcheck:
@@ -13,40 +16,70 @@ services:
       timeout: 5s
       retries: 60
 
+  # Using as a fake DNS
+  # Allow to reach fak domains
   proxy:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - login
-      - resource
+    image: jwilder/nginx-proxy
     ports:
       - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      - front
+      - rrhh
+      - pkce
+      - apigateway
 
-  gateway:
+  # Krakend in front of all APIs
+  apigateway:
     image: devopsfaith/krakend:1.4.1
     command: [ "run", "-d", "-c", "/etc/krakend/krakend.json"]
+    environment:
+      - VIRTUAL_HOST=api.umes
+      - VIRTUAL_PORT=8080
     volumes:
       - ./krakend-gw.json:/etc/krakend/krakend.json
     depends_on:
       - resource
 
+  # VUEJS FRONTEND APP
   front:
     build: ./oidc-vuejs
     image: vuejs/oidc
+    environment:
+      - VIRTUAL_HOST=micampus.umes
+      - VIRTUAL_PORT=8080
     depends_on:
-      sso:
+      entrada:
         condition: service_healthy
 
-  login:
+  # CLASSIC CAS FILTERED WEBAPP
+  rrhh:
+    build: ./cas-app
+    image: casfilter/cas
+    environment:
+      - VIRTUAL_HOST=rrhh.umes
+      - VIRTUAL_PORT=8080
+    depends_on:
+      entrada:
+        condition: service_healthy
+  
+  # MODERN WEB APP WITH OIDC-PKCE FLOW
+  pkce:
     build: ./oidc-login
     image: springboot/oidc-login
+    environment:
+      - VIRTUAL_HOST=pkce.umes
+      - VIRTUAL_PORT=8080
     volumes:
       - ./application_login.yml:/app/config/application.yml
     depends_on:
-      sso:
+     entrada:
         condition: service_healthy
 
+  #
+  # ALL THIS APIs ARE HIDE BEHIND KRAKEND
+  #
   resource:
     build: ./oidc-resource
     image: springboot/oidc-resource
@@ -54,17 +87,3 @@ services:
       - SNAME="SRV1"
     volumes:
       - ./application_resource.yml:/app/config/application.yml
-    depends_on:
-      sso:
-        condition: service_healthy
-
-  resource2:
-    build: ./oidc-resource
-    image: springboot/oidc-resource
-    environment:
-      - SNAME="SRV2"
-    volumes:
-      - ./application_resource.yml:/app/config/application.yml
-    depends_on:
-      sso:
-        condition: service_healthy

@@ -5,10 +5,10 @@ spring:
         registration:
           casum:
             client-id: clientid
-            client-secret: ----
+            client-secret: thisisnotused
         provider:
           casum:
-            issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
+            issuer-uri: https://f146-31-222-83-252.ngrok.io/cas/oidc
 
 server:
   forward-headers-strategy: native
@@ -19,4 +19,5 @@ server:
 
 remote:
   resource:
-    baseurl: "http://resource:8080/resources"
+    baseurl: "http://apigateway:8080/resources"
+    #direct#baseurl: "http://resource:8080/resources"

@@ -1,19 +1,19 @@
-spring:
-  security:
-    oauth2:
-      # client:
-      #   registration:
-      #     casum:
-      #       authorization-grant-type: client_credentials
-      #       client-id: clientId0
-      #       client-secret: clientSecret
-      #   provider:
-      #     casum:
-      #       token-uri: http://kubernetes.docker.internal:8001/cas/oauth2.0/accessToken
-      #       issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
-      resourceserver:
-        jwt:
-          issuer-uri: http://kubernetes.docker.internal:8001/cas/oidc
+# spring:
+#   security:
+#     oauth2:
+#       client:
+#         registration:
+#           casum:
+#             authorization-grant-type: client_credentials
+#             client-id: clientId0
+#             client-secret: clientSecret
+#         provider:
+#           casum:
+#             token-uri: http://entrada.umes/cas/oauth2.0/accessToken
+#             issuer-uri: http://entrada.umes/cas/oidc
+#       resourceserver:
+#         jwt:
+#           issuer-uri: https://f146-31-222-83-252.ngrok.io/cas/oidc
 
 server:
   forward-headers-strategy: native
@@ -28,6 +28,6 @@ logging:
       springframework:
         security: DEBUG
 
-remote:
-  resource:
-    url: "http://resource2:8080/resources/something"
+# remote:
+#   resource:
+#     url: "http://resource2:8080/resources/something"

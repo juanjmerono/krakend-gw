@@ -16,6 +16,7 @@ RUN mkdir /etc/cas \
   && cd /etc/cas
 WORKDIR /root
 COPY --from=buildwar /tmp/cas-overlay/build/libs/cas.war .
-COPY etc/cas /etc/cas
+# Uncomment this to generate RS256 jwt access-tokens
+#COPY etc/cas /etc/cas
 EXPOSE 8080
 CMD [ "java", "-jar", "/root/cas.war" ]

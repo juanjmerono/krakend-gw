@@ -6,50 +6,51 @@
     "timeout": "30s",
     "endpoints": [
         {
-            "endpoint": "/gwresources/claims",
+            "endpoint": "/resources/hello",
+            "headers_to_pass":[ "*" ],
             "output_encoding": "no-op",
             "backend": [
                 {
                     "host": "http://resource:8080",
                     "encoding": "no-op",
-                    "url_pattern": "/resources/claims"
+                    "url_pattern": "/resources/hello"
                 }
             ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-jose/validator": {
                     "alg": "RS512",
-                    "audience": ["http://kubernetes.docker.internal/auth/signinpop/main"],
-                    "app-audience": ["http://kubernetes.docker.internal/login/oauth2/code/okta"],
-                    "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
+                    "vue-audience": ["http://micampus.umes/auth/signinpop/main"],
+                    "app-audience": ["http://pkce.umes/login/oauth2/code/casum"],
+                    "issuer": "https://f146-31-222-83-252.ngrok.io/cas/oidc",
                     "scopes": ["openid"],
                     "scopes_key": "scopes",
                     "scopes_matcher": "any",
-                    "jwk-url": "http://sso:8080/cas/oidc/jwks",
+                    "jwk-url": "http://entrada:8080/cas/oidc/jwks",
                     "disable_jwk_security": true                
                 }
             }        
         },
         {
-            "endpoint": "/gwresources/something",
+            "endpoint": "/resources/bearer",
             "headers_to_pass":[ "*" ],
             "output_encoding": "no-op",
             "backend": [
                 {
-                    "real_host": "http://resource:8080",
-                    "real_url_pattern": "/resources/something",
-                    "host": "http://gateway:8080",
-                    "url_pattern": "/__debug/resources/something",
+                    "host": "http://resource:8080",
+                    "url_pattern": "/resources/bearer",
                     "encoding": "no-op"
                 }
             ],
             "extra_config": {
                 "github.com/devopsfaith/krakend-jose/validator": {
-                    "alg": "RS256",
-                    "issuer": "http://kubernetes.docker.internal:8001/cas/oidc",
+                    "alg": "RS512",
+                    "vue-audience": ["http://micampus.umes/auth/signinpop/main"],
+                    "app-audience": ["http://pkce.umes/login/oauth2/code/casum"],
+                    "issuer": "https://f146-31-222-83-252.ngrok.io/cas/oidc",
                     "scopes": ["openid"],
                     "scopes_key": "scopes",
                     "scopes_matcher": "any",
-                    "jwk-url": "http://sso:8080/cas/oidc/jwks",
+                    "jwk-url": "http://entrada:8080/cas/oidc/jwks",
                     "disable_jwk_security": true                
                 }
             }        

@@ -38,7 +38,12 @@ GENERATE KEYSTORE: https://mkjwk.org/
 
 ## Demo
 
+Para ejecutar la demo debes modificar /etc/hosts para añadir los dominios de cada ejemplo.
 La demo contiene:
 
-- Una instancia de identity provider en este caso CAS 6.3.7
-- 
+- Una instancia de identity provider en este caso CAS 6.3.7 alojada en el puerto 8001 usa ngrok para https
+- Una instancia de una aplicación con uso de filtro cas tradicional en rrhh.umes/rrhh
+- Una instancia de una aplicación front vuejs en micampus.umes
+- Una instancia de un apigateway en api.umes
+
+Todas las APIs está escondidas detrás del gateway inaccesibles desde el exterior.

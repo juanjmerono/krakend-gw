@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import static org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,18 +74,22 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 
+@Controller
+class OidcWController {
+
+	@GetMapping("/")
+	String index() {
+		return "index.html";
+	}
+
+}
+
 @RestController
-@RequestMapping("/basic")
 class OidcController {
 	private final WebClient client;
 
 	public OidcController(WebClient client) {
 		this.client = client;
-	}
-
-	@GetMapping("/")
-	String hello() {
-		return "Hello World !!";
 	}
 
 	@GetMapping("/myname")
@@ -97,39 +102,22 @@ class OidcController {
 		return principal.getClaims();
 	}
 
-	@GetMapping("/something")
+	@GetMapping("/remote/hello")
 	String getSomethingFromRServer() {
 		return client.get()
-				.uri("/something")
+				.uri("/hello")
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();
 	}
 
-	@GetMapping("/claims")
-	Map getClaimsFromRServer() {
-		return client.get()
-				.uri("/claims")
-				.retrieve()
-				.bodyToMono(Map.class)
-				.block();
-	}
-
-	@GetMapping("/email")
+	@GetMapping("/remote/bearer")
 	String getSubjectFromRServer() {
 		return client.get()
-				.uri("/email")
+				.uri("/bearer")
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();
 	}
 
-	@GetMapping("/remote")
-	String getSubjectFromR2Server() {
-		return client.get()
-				.uri("/remote")
-				.retrieve()
-				.bodyToMono(String.class)
-				.block();
-	}
 }

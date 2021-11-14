@@ -1,0 +1,29 @@
+# Build Stage for Spring boot application image
+#FROM openjdk:8-jdk-alpine as build
+FROM openjdk:11-jdk-slim as build
+
+WORKDIR /app
+
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+RUN chmod +x ./mvnw
+# download the dependency if needed or if the pom file is changed
+#RUN ./mvnw dependency:go-offline -B
+
+COPY src src
+
+RUN ./mvnw package -DskipTests
+RUN ls /app/target
+
+# Production Stage for Spring boot application image
+#FROM openjdk:8-jre-alpine as production
+FROM tomcat:9.0.54-jre11-openjdk-slim as production
+ARG DEPENDENCY=/app/target
+
+# Copy the dependency application file from build stage artifact
+COPY --from=build ${DEPENDENCY}/cas-sample-java-webapp.war /usr/local/tomcat/webapps/rrhh.war
+
+# Run the Spring boot application
+#ENTRYPOINT ["java", "-cp", "app:app/lib/*","com.example.secureserver.DemoApplication"]

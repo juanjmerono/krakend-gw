@@ -9,7 +9,7 @@ var mainOidc = createOidcAuth(
   SignInType.Popup,
   appRootUrl,
   {
-    authority: 'http://kubernetes.docker.internal:8001/cas/oidc/',
+    authority: 'https://f146-31-222-83-252.ngrok.io/cas/oidc/',
     client_id: 'clientid', // 'implicit.shortlived',
     response_type: 'code',
     scope: 'openid',
