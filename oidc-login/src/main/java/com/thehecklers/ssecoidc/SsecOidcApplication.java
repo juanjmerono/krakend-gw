@@ -103,7 +103,7 @@ class OidcController {
 	}
 
 	@GetMapping("/remote/hello")
-	String getSomethingFromRServer() {
+	String getHelloFromRServer() {
 		return client.get()
 				.uri("/hello")
 				.retrieve()
@@ -115,6 +115,15 @@ class OidcController {
 	String getSubjectFromRServer() {
 		return client.get()
 				.uri("/bearer")
+				.retrieve()
+				.bodyToMono(String.class)
+				.block();
+	}
+
+	@GetMapping("/remote/composed")
+	String getComposedFromRServer() {
+		return client.get()
+				.uri("/composed")
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();

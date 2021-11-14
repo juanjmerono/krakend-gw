@@ -84,6 +84,14 @@ services:
     build: ./oidc-resource
     image: springboot/oidc-resource
     environment:
-      - SNAME="SRV1"
+      - SNAME=SRV1
+    volumes:
+      - ./application_resource.yml:/app/config/application.yml
+
+  resource2:
+    build: ./oidc-resource
+    image: springboot/oidc-resource
+    environment:
+      - SNAME=SRV2
     volumes:
       - ./application_resource.yml:/app/config/application.yml

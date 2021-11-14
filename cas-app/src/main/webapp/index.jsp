@@ -69,5 +69,12 @@
     }
 %>
 
+<ul>
+    <li><a href="http://pkce.umes/">Go to modern app</a></li>
+</ul>
+<ul>
+    <li><a href="http://api.umes/resources/hello">Try API Directly</a></li>
+</ul>
+
 </body>
 </html>

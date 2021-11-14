@@ -63,6 +63,45 @@
                     "disable_jwk_security": true                
                 }
             }        
+        },
+        {
+            "endpoint": "/resources/composed",
+            "headers_to_pass":[ "*" ],
+            "backend": [
+                {
+                    "host": "http://resource:8080",
+                    "url_pattern": "/resources/hello",
+                    "group": "hello1"
+                },
+                {
+                    "host": "http://resource2:8080",
+                    "url_pattern": "/resources/hello",
+                    "group": "hello2"
+                },
+                {
+                    "host": "http://resource:8080",
+                    "url_pattern": "/resources/bearer",
+                    "group": "bearer1"
+                },
+                {
+                    "host": "http://resource2:8080",
+                    "url_pattern": "/resources/bearer",
+                    "group": "bearer2"
+                }
+            ],
+            "extra_config": {
+                "github.com/devopsfaith/krakend-jose/validator": {
+                    "alg": "RS512",
+                    "vue-audience": ["http://micampus.umes/auth/signinpop/main"],
+                    "app-audience": ["http://pkce.umes/login/oauth2/code/casum"],
+                    "issuer": "https://4357-31-222-83-252.ngrok.io/cas/oidc",
+                    "scopes": ["openid"],
+                    "scopes_key": "scopes",
+                    "scopes_matcher": "any",
+                    "jwk-url": "http://entrada:8080/cas/oidc/jwks",
+                    "disable_jwk_security": true                
+                }
+            }        
         }
    ]
 }
