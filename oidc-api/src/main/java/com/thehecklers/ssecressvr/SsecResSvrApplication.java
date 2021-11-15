@@ -33,7 +33,7 @@ class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {// @formatter:off
         http
             .authorizeRequests()
-            .mvcMatchers(HttpMethod.GET, "/resources/**").hasAuthority("SCOPE_openid")
+            .mvcMatchers(HttpMethod.GET, "/oauth/**").hasAuthority("SCOPE_openid")
             .anyRequest()
             .authenticated()
             .and()
@@ -42,7 +42,7 @@ class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 
 @RestController
-@RequestMapping("/resources")
+@RequestMapping("/oauth")
 class ResourceController {
 
     @Value("${SNAME}")
@@ -53,8 +53,8 @@ class ResourceController {
         return (Map<String, String>) Collections.singletonMap("response", "HELLO WORLD ["+sName+"]");
     }
 
-    @GetMapping("/bearer")
-    Map getBearer(@AuthenticationPrincipal Jwt principal) {
+    @GetMapping("/username")
+    Map getUserName(@AuthenticationPrincipal Jwt principal) {
         HashMap<String,String> hmap = new HashMap<String,String>();
         hmap.put("server",sName);
         hmap.put("sub",principal.getSubject());

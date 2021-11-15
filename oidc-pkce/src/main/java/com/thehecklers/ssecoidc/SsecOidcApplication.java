@@ -15,6 +15,7 @@ import static org.springframework.security.oauth2.client.web.OAuth2Authorization
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -102,28 +103,12 @@ class OidcController {
 		return principal.getClaims();
 	}
 
-	@GetMapping("/remote/hello")
-	String getHelloFromRServer() {
+	@GetMapping("/remote/{type}/{server}/{method}")
+	String getFromServer(@PathVariable("server") String server,
+						 @PathVariable("type") String type, 
+						 @PathVariable("method") String method) {
 		return client.get()
-				.uri("/hello")
-				.retrieve()
-				.bodyToMono(String.class)
-				.block();
-	}
-
-	@GetMapping("/remote/bearer")
-	String getSubjectFromRServer() {
-		return client.get()
-				.uri("/bearer")
-				.retrieve()
-				.bodyToMono(String.class)
-				.block();
-	}
-
-	@GetMapping("/remote/composed")
-	String getComposedFromRServer() {
-		return client.get()
-				.uri("/composed")
+				.uri("http://"+server+":8080/"+type+"/"+method)
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();

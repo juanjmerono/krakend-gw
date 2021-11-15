@@ -1,0 +1,30 @@
+{
+    "version": 2,
+    "name": "UMU API Gateway",
+    "port": 8080,
+    "cache_ttl": "3600s",
+    "timeout": "30s",
+    "extra_config": {{ marshal .cors.extra_config }},
+    "endpoints": [
+        {{ template "oauth.tmpl" .resources }},
+        {
+            "endpoint": "/oauth/composed/{method}",
+            "headers_to_pass":[ "*" ],
+            "backend": [
+                {
+                    "host": "http://api1:8080",
+                    "url_pattern": "/oauth/{method}",
+                    "group": "api1"
+                },
+                {
+                    "host": "http://api2:8080",
+                    "url_pattern": "/oauth/{method}",
+                    "group": "api2"
+                }
+            ],
+            "extra_config": {
+                {{ include "oidc_extra_config.tmp" }}
+            }
+        }
+   ]
+}

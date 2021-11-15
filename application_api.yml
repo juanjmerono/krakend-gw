@@ -17,4 +17,4 @@ spring:
       resourceserver:
         jwt:
           jws-algorithm: RS512
-          jwk-set-uri: https://8518-31-222-83-252.ngrok.io/cas/oidc/jwks
+          jwk-set-uri: https://596c-31-222-83-252.ngrok.io/cas/oidc/jwks

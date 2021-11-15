@@ -1,0 +1,18 @@
+{{ range $idx, $endpoint := .endpoints }}
+{{if $idx}},{{end}}
+{
+    "endpoint": "/oauth/{{ $endpoint.server }}/{method}",
+    "headers_to_pass":[ "*" ],
+    "output_encoding": "no-op",
+    "backend": [
+        {
+            "host": "http://{{ $endpoint.server }}:8080",
+            "encoding": "no-op",
+            "url_pattern": "/oauth/{method}"
+        }
+    ],
+    "extra_config": {
+        {{ include "oidc_extra_config.tmp" }}
+    }
+}
+{{ end }}

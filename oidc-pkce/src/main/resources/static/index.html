@@ -1,16 +1,31 @@
 <html>
     <head>
         <title>OIDC PKCE Bakcend Application</title>
+        <script>
+            function navigateTo(useApi) {
+                if (useApi) {
+                    location.href='http://api.umes'+document.getElementById('path').value;
+                } else {
+                    location.href='/remote'+document.getElementById('path').value;
+                }
+            }
+        </script>
     </head>
     <body>
         <h1>HELLO WORLD</h1>
         <ul>
             <li><a href="/myname">Show My Name</a></li>
             <li><a href="/myclaims">Show My Claims</a></li>
-            <li><a href="/remote/hello">Show Remote Hello</a></li>
-            <li><a href="/remote/bearer">Show Remote Bearer</a></li>
-            <li><a href="/remote/composed">Show Remote Composed</a></li>
         </ul>
+        <dl>
+            <dd>
+            <form name="f1">
+                <input type="text" id="path" value="/oauth/api1/hello"/>
+                <input type="button" onclick="navigateTo(false)" value="Go via backend" />&nbsp;
+                <input type="button" onclick="navigateTo(true)" value="Go via api" />
+            </form>
+            </dd>
+        </dl> 
         <ul>
             <li><a href="http://rrhh.umes/rrhh">Go to classic app</a></li>
         </ul>

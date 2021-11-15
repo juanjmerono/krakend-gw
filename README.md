@@ -47,3 +47,12 @@ La demo contiene:
 - Una instancia de un apigateway en api.umes que protege las apis
 
 Todas las APIs está escondidas detrás del gateway inaccesibles desde el exterior.
+
+### Validate Krakend
+
+krakend/docker-compose up
+
+# RUN DEMO
+
+docker-compose up --force-recreate --build -d
+

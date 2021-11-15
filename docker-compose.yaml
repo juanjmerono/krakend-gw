@@ -37,8 +37,15 @@ services:
     environment:
       - VIRTUAL_HOST=api.umes
       - VIRTUAL_PORT=8080
+      - FC_ENABLE=1
+      - FC_SETTINGS=/etc/krakend/settings
+      - FC_PARTIALS=/etc/krakend/partials
+      - FC_TEMPLATES=/etc/krakend/templates
     volumes:
-      - ./krakend-gw.json:/etc/krakend/krakend.json
+      - ./krakend/settings:/etc/krakend/settings
+      - ./krakend/partials:/etc/krakend/partials
+      - ./krakend/templates:/etc/krakend/templates
+      - ./krakend/krakend.json:/etc/krakend/krakend.json
 
   # VUEJS FRONTEND APP
   front:

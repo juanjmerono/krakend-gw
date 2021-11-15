@@ -1,0 +1,18 @@
+version: "3"
+services:
+  # Krakend test config
+  testkrakend:
+    image: devopsfaith/krakend:1.4.1
+    command: [ "check", "-t", "-d", "-c", "/etc/krakend/krakend.json"]
+    environment:
+      - FC_ENABLE=1
+      - FC_SETTINGS=/etc/krakend/settings
+      - FC_PARTIALS=/etc/krakend/partials
+      - FC_TEMPLATES=/etc/krakend/templates
+      - FC_OUT=/etc/krakend/out/out.json
+    volumes:
+      - ./krakend.json:/etc/krakend/krakend.json
+      - ./settings:/etc/krakend/settings
+      - ./partials:/etc/krakend/partials
+      - ./templates:/etc/krakend/templates
+      - ./out:/etc/krakend/out

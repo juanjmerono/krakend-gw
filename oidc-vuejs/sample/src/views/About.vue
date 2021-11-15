@@ -17,7 +17,7 @@ export default {
   data: function() {
     return { 
       saludo: "Haz click para invocar a la API",
-      apipath: "/resources/hello"
+      apipath: "/oauth/api1/hello"
     }
   },
   methods: {

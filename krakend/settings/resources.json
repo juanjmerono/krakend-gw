@@ -1,0 +1,10 @@
+{
+    "endpoints": [
+        {
+            "server":"api1"
+        },
+        {
+            "server":"api2"
+        }
+    ]
+}
