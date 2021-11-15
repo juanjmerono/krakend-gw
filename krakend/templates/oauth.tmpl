@@ -1,3 +1,21 @@
+{
+    "endpoint": "/oauth/composed/{method}",
+    "headers_to_pass":[ "*" ],
+    "backend": [
+        {{ range $idx, $endpoint := .endpoints }}
+        {{if $idx}},{{end}}
+        {
+            "host": "http://{{ $endpoint.server }}:8080",
+            "url_pattern": "/oauth/{method}",
+            "group": "{{ $endpoint.server }}"
+        }
+        {{ end }}
+    ],
+    "extra_config": {
+        {{ include "oidc_extra_config.tmp" }},
+        {{ include "rate_limit_extra_config.tmp" }}
+    }
+},
 {{ range $idx, $endpoint := .endpoints }}
 {{if $idx}},{{end}}
 {
@@ -12,7 +30,8 @@
         }
     ],
     "extra_config": {
-        {{ include "oidc_extra_config.tmp" }}
+        {{ include "oidc_extra_config.tmp" }},
+        {{ include "rate_limit_extra_config.tmp" }}
     }
 }
 {{ end }}

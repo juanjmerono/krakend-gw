@@ -1,6 +1,5 @@
 package com.thehecklers.ssecoidc;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +15,6 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,9 +22,6 @@ import java.util.Map;
 
 @SpringBootApplication
 public class SsecOidcApplication {
-
-	@Value("${remote.resource.baseurl}")
-	private String resourceUrl;
 
 	@Bean
 	WebClient client(ClientRegistrationRepository regRepo,
@@ -40,7 +35,6 @@ public class SsecOidcApplication {
 		fFunc.setDefaultOAuth2AuthorizedClient(true);
 
 		return WebClient.builder()
-				.baseUrl(resourceUrl)
 				.apply(fFunc.oauth2Configuration())
 				.build();
 	}

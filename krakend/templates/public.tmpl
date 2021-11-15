@@ -1,3 +1,25 @@
+{
+    "endpoint": "/public/composed/{method}",
+    "headers_to_pass":[ "*" ],
+    "backend": [
+        {
+            "host": "http://api1:8080",
+            "url_pattern": "/public/{method}",
+            "group": "api1",
+            "extra_config": {
+                {{ include "backend_rate_limit_extra_config.tmp" }}
+            }
+        },
+        {
+            "host": "http://api2:8080",
+            "url_pattern": "/public/{method}",
+            "group": "api2",
+            "extra_config": {
+                {{ include "backend_rate_limit_extra_config.tmp" }}
+            }
+        }
+    ]
+},
 {{ range $idx, $endpoint := .endpoints }}
 {{if $idx}},{{end}}
 {
@@ -8,7 +30,10 @@
         {
             "host": "http://{{ $endpoint.server }}:8080",
             "encoding": "no-op",
-            "url_pattern": "/public/{method}"
+            "url_pattern": "/public/{method}",
+            "extra_config": {
+                {{ include "backend_rate_limit_extra_config.tmp" }}
+            }
         }
     ]
 }

@@ -1,0 +1,21 @@
+{
+    "endpoint": "/legacy/public/github/{userId}",
+    "backend": [
+        {
+        "host": [ "https://api.github.com" ],
+        "url_pattern": "/users/{userId}",
+        "whitelist": [
+            "html_url",
+            "name",
+            "type",
+            "login",
+            "email",
+            "public_repos"
+        ],
+        "mapping": { "html_url": "weburl" },
+        "extra_config": { 
+            {{ include "backend_rate_limit_extra_config.tmp" }}
+        }                
+        }
+    ]
+}

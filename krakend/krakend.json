@@ -8,40 +8,6 @@
     "endpoints": [
         {{ template "oauth.tmpl" .resources }},
         {{ template "public.tmpl" .resources }},
-        {
-            "endpoint": "/public/composed/{method}",
-            "headers_to_pass":[ "*" ],
-            "backend": [
-                {
-                    "host": "http://api1:8080",
-                    "url_pattern": "/public/{method}",
-                    "group": "api1"
-                },
-                {
-                    "host": "http://api2:8080",
-                    "url_pattern": "/public/{method}",
-                    "group": "api2"
-                }
-            ]
-        },
-        {
-            "endpoint": "/oauth/composed/{method}",
-            "headers_to_pass":[ "*" ],
-            "backend": [
-                {
-                    "host": "http://api1:8080",
-                    "url_pattern": "/oauth/{method}",
-                    "group": "api1"
-                },
-                {
-                    "host": "http://api2:8080",
-                    "url_pattern": "/oauth/{method}",
-                    "group": "api2"
-                }
-            ],
-            "extra_config": {
-                {{ include "oidc_extra_config.tmp" }}
-            }
-        }
+        {{ template "legacy.tmpl" .resources }}
    ]
 }

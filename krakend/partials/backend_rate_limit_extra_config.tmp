@@ -1,0 +1,4 @@
+"github.com/devopsfaith/krakend-ratelimit/juju/proxy": {
+    "maxRate": 0.5,
+    "capacity": 1
+}

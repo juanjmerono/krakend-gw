@@ -1,0 +1,5 @@
+"github.com/devopsfaith/krakend-ratelimit/juju/router": {
+    "maxRate": 10,
+    "clientMaxRate": 5,
+    "strategy": "ip"
+}
