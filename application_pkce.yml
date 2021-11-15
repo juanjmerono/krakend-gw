@@ -8,7 +8,7 @@ spring:
             client-secret: thisisnotused
         provider:
           casum:
-            issuer-uri: https://4357-31-222-83-252.ngrok.io/cas/oidc
+            issuer-uri: https://8518-31-222-83-252.ngrok.io/cas/oidc
 
 server:
   forward-headers-strategy: native
@@ -21,4 +21,4 @@ remote:
   resource:
     baseurl: "http://apigateway:8080/resources"
     #direct call (fails composed response)
-    #baseurl: "http://resource:8080/resources"
+    #baseurl: "http://api1:8080/resources"

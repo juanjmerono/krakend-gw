@@ -39,8 +39,6 @@ services:
       - VIRTUAL_PORT=8080
     volumes:
       - ./krakend-gw.json:/etc/krakend/krakend.json
-    depends_on:
-      - resource
 
   # VUEJS FRONTEND APP
   front:
@@ -66,13 +64,13 @@ services:
   
   # MODERN WEB APP WITH OIDC-PKCE FLOW
   pkce:
-    build: ./oidc-login
-    image: springboot/oidc-login
+    build: ./oidc-pkce
+    image: springboot/oidc-pkce
     environment:
       - VIRTUAL_HOST=pkce.umes
       - VIRTUAL_PORT=8080
     volumes:
-      - ./application_login.yml:/app/config/application.yml
+      - ./application_pkce.yml:/app/config/application.yml
     depends_on:
      entrada:
         condition: service_healthy
@@ -80,18 +78,18 @@ services:
   #
   # ALL THIS APIs ARE HIDE BEHIND KRAKEND
   #
-  resource:
-    build: ./oidc-resource
-    image: springboot/oidc-resource
+  api1:
+    build: ./oidc-api
+    image: springboot/oidc-api
     environment:
       - SNAME=SRV1
     volumes:
-      - ./application_resource.yml:/app/config/application.yml
+      - ./application_api.yml:/app/config/application.yml
 
-  resource2:
-    build: ./oidc-resource
-    image: springboot/oidc-resource
+  api2:
+    build: ./oidc-api
+    image: springboot/oidc-api
     environment:
       - SNAME=SRV2
     volumes:
-      - ./application_resource.yml:/app/config/application.yml
+      - ./application_api.yml:/app/config/application.yml
