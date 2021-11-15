@@ -33,12 +33,27 @@ class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {// @formatter:off
         http
             .authorizeRequests()
+			.mvcMatchers("/public/**").permitAll()
             .mvcMatchers(HttpMethod.GET, "/oauth/**").hasAuthority("SCOPE_openid")
             .anyRequest()
             .authenticated()
             .and()
             .oauth2ResourceServer().jwt();          
 	}
+}
+
+@RestController
+@RequestMapping("/public")
+class PublicResourceController {
+
+    @Value("${SNAME}")
+    private String sName;
+
+    @GetMapping("/hello")
+    Map<String,String> getHello() {
+        return (Map<String, String>) Collections.singletonMap("response", "PUBLIC ["+sName+"]");
+    }
+
 }
 
 @RestController

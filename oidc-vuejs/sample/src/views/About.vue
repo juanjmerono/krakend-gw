@@ -7,8 +7,8 @@
         <strong>{{c.key}}</strong>: {{c.value}}</li>
     </ul>
     <input v-model="apipath" placeholder="/resources/hello"><br/>
-    <button v-on:click="miSaludo('xxxx')">Saludar Token Incorrecto</button>
-    <button v-on:click="miSaludo('')">Saludar Token Correcto</button>
+    <button v-on:click="miSaludo('xxxx')">Usar Token Incorrecto</button>
+    <button v-on:click="miSaludo('')">Usar Token Correcto</button>
     <p>{{ saludo }}</p>
   </div>
 </template>

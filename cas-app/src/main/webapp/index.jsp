@@ -12,6 +12,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>CAS Example Java Web App</title>
+    <script>
+        function navigateTo(useApi) {
+            if (useApi) {
+                location.href='http://api.umes'+document.getElementById('path').value;
+            } else {
+                location.href='/remote'+document.getElementById('path').value;
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -69,11 +78,18 @@
     }
 %>
 
+<dl>
+    <dd>
+    <form name="f1">
+        <input type="text" id="path" value="/oauth/api1/hello"/>
+        <input type="button" onclick="navigateTo(false)" value="Go via backend" />&nbsp;
+        <input type="button" onclick="navigateTo(true)" value="Go via api" />
+    </form>
+    </dd>
+</dl> 
 <ul>
     <li><a href="http://pkce.umes/">Go to modern app</a></li>
-</ul>
-<ul>
-    <li><a href="http://api.umes/resources/hello">Try API Directly</a></li>
+    <li><a href="http://micampus.umes/">Go to frontend app</a></li>
 </ul>
 
 </body>

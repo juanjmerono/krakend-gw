@@ -1,0 +1,15 @@
+{{ range $idx, $endpoint := .endpoints }}
+{{if $idx}},{{end}}
+{
+    "endpoint": "/public/{{ $endpoint.server }}/{method}",
+    "headers_to_pass":[ "*" ],
+    "output_encoding": "no-op",
+    "backend": [
+        {
+            "host": "http://{{ $endpoint.server }}:8080",
+            "encoding": "no-op",
+            "url_pattern": "/public/{method}"
+        }
+    ]
+}
+{{ end }}
