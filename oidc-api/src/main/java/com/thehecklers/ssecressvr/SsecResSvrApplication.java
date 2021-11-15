@@ -1,17 +1,19 @@
 package com.thehecklers.ssecressvr;
 
-import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jayway.jsonpath.JsonPath;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +24,21 @@ public class SsecResSvrApplication {
         SpringApplication.run(SsecResSvrApplication.class, args);
     }
 
+}
+
+@Configuration
+class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {// @formatter:off
+        http
+            .authorizeRequests()
+            .mvcMatchers(HttpMethod.GET, "/resources/**").hasAuthority("SCOPE_openid")
+            .anyRequest()
+            .authenticated()
+            .and()
+            .oauth2ResourceServer().jwt();          
+	}
 }
 
 @RestController
@@ -37,17 +54,10 @@ class ResourceController {
     }
 
     @GetMapping("/bearer")
-    Map getBearer(@RequestHeader (name="Authorization") String token) {
-        String[] chunks = token.replaceFirst("Bearer ","").split("\\.");
-        Base64.Decoder decoder = Base64.getDecoder();
-
-        //String header = new String(decoder.decode(chunks[0]));
-        String payload = new String(decoder.decode(chunks[1]));
-
+    Map getBearer(@AuthenticationPrincipal Jwt principal) {
         HashMap<String,String> hmap = new HashMap<String,String>();
         hmap.put("server",sName);
-        hmap.put("sub",JsonPath.parse(payload).read("$.sub"));
-        hmap.put("aud",JsonPath.parse(payload).read("$.aud"));
+        hmap.put("sub",principal.getSubject());
         return hmap;
     }
 

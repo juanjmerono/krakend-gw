@@ -11,3 +11,10 @@ logging:
       springframework:
         security: DEBUG
 
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jws-algorithm: RS512
+          jwk-set-uri: https://8518-31-222-83-252.ngrok.io/cas/oidc/jwks
