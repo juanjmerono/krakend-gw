@@ -6,33 +6,47 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ClientRegistrations;
 import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class SsecResSvrApplication {
@@ -43,46 +57,68 @@ public class SsecResSvrApplication {
 
 }
 
+@Component
+class TokenManager {
+
+    private final OAuth2AuthorizedClientManager authorizedClientManager;
+  
+    public TokenManager(OAuth2AuthorizedClientManager authorizedClientManager) {
+      this.authorizedClientManager = authorizedClientManager;
+    }
+  
+    private Authentication createAuthentication(final String principalName) {
+		return new AbstractAuthenticationToken(null) {
+			private static final long serialVersionUID = -2038812908189509872L;
+
+			@Override
+			public Object getCredentials() {
+				return "";
+			}
+
+			@Override
+			public Object getPrincipal() {
+				return principalName;
+			}
+		};
+	}
+
+    public String getAccessToken() {
+      OAuth2AuthorizeRequest authorizeRequest =
+              OAuth2AuthorizeRequest
+                    .withClientRegistrationId("casum")
+                    .principal(createAuthentication("casum"))
+                    .build();
+  
+      OAuth2AuthorizedClient authorizedClient =
+              this.authorizedClientManager.authorize(authorizeRequest);
+  
+      OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+  
+      return accessToken.getTokenValue();
+    }
+  }
+
 @Configuration
 class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private static final Logger log = LoggerFactory.getLogger(JWTSecurityConfig.class);
-
-    @Bean("rcr")
-    ReactiveClientRegistrationRepository getRegistration(
-            @Value("${spring.security.oauth2.client.registration.casum.client-id}") String clientId,
-            @Value("${spring.security.oauth2.client.registration.casum.client-secret}") String clientSecret,
-            @Value("${spring.security.oauth2.client.provider.casum.issuer-uri}") String issuerUri
-    ) {
-        ClientRegistration registration = ClientRegistrations.fromIssuerLocation(issuerUri)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .registrationId("casum")
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.POST)
-                .build();
-
-        return new InMemoryReactiveClientRegistrationRepository(registration);
-    }
-    @Bean(name = "client")
-    WebClient webClient(@Qualifier("rcr") ReactiveClientRegistrationRepository clientRegistrations) {
-        ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = 
-            new ServerOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, 
-                                    new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
-        oauth.setDefaultClientRegistrationId("casum");
-        return WebClient.builder()
-                .filter(oauth)
-                .filter(logRequest())
-                .build();
-    }
-
-    private ExchangeFilterFunction logRequest() {
-        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            log.info("Request: [{}] {}", clientRequest.method(), clientRequest.url());
-            log.debug("Payload: {}", clientRequest.body());
-
-            return Mono.just(clientRequest);
-        });
+        
+  
+    @Bean
+    OAuth2AuthorizedClientManager authorizedClientManager(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientRepository authorizedClientRepository) {
+  
+      OAuth2AuthorizedClientProvider authorizedClientProvider =
+              OAuth2AuthorizedClientProviderBuilder.builder()
+                      .clientCredentials()
+                      .build();
+  
+      var authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
+                                            clientRegistrationRepository,
+                                            authorizedClientRepository);
+  
+      authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+  
+      return authorizedClientManager;
     }
         
     @Override
@@ -117,11 +153,11 @@ class PublicResourceController {
 @RestController
 @RequestMapping("/oauth")
 class ResourceController {
-	private final WebClient client;
 
-	public ResourceController(WebClient client) {
-		this.client = client;
-	}
+    private static final String AUTHORIZATION = "Authorization";
+
+    @Autowired
+    TokenManager tokenManager;
 
     @Value("${SNAME}")
     private String sName;
@@ -145,11 +181,15 @@ class ResourceController {
         
         String rootPath = "__debug".equals(method)?"__debug":"oauth";
         String finalServer = "__debug".equals(method)?"apigateway":server;
-		return client.get()
-				.uri("http://"+finalServer+":8080/"+rootPath+"/"+method)
-				.retrieve()
-				.bodyToMono(String.class)
-				.block();
-	}
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(AUTHORIZATION, "Bearer " + tokenManager.getAccessToken());
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.exchange(
+                "http://"+finalServer+":8080/"+rootPath+"/"+method, 
+                HttpMethod.GET, request, String.class)
+                .getBody();
+	}
+    
 }

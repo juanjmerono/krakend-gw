@@ -20,9 +20,11 @@ spring:
             client-id: clientId0
             client-secret: clientSecret
             authorization-grant-type: client_credentials
+            scope: openid
         provider:
           casum:
-            issuer-uri: https://81fd-31-222-83-252.ngrok.io/cas/oidc
+            issuer-uri: https://0090-31-222-83-252.ngrok.io/cas/oidc
+            token-uri: https://0090-31-222-83-252.ngrok.io/cas/oauth2.0/token
       resourceserver:
         jwt:
           jws-algorithm: RS512
