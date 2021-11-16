@@ -1,10 +1,11 @@
 {
     "@class" : "org.apereo.cas.services.OidcRegisteredService",
-    "id" : 100002,
-    "name" : "OpenIDConnectService",
+    "id" : 1002,
+    "name" : "ModernWebPKCE",
     "clientId": "clientid",
-    "serviceId": "^(https|imaps|http)://.*",
+    "serviceId": "^http://(pkce|micampus).umes.*",
     "bypassApprovalPrompt": true,
+    "supportedGrantTypes": [ "java.util.HashSet", [ "authorization_code", "refresh_token" ] ],
     "scopes" : [ "java.util.HashSet", [ "profile", "openid", "email" ] ],
     "generateRefreshToken": true,
     "jwtAccessToken": true

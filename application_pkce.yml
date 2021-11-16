@@ -8,7 +8,7 @@ spring:
             client-secret: thisisnotused
         provider:
           casum:
-            issuer-uri: https://fabe-31-222-83-252.ngrok.io/cas/oidc
+            issuer-uri: https://b48b-31-222-83-252.ngrok.io/cas/oidc
 
 server:
   forward-headers-strategy: native

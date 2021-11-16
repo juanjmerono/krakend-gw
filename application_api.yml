@@ -16,15 +16,21 @@ spring:
     oauth2:
       client:
         registration:
-          casum:
-            client-id: clientId0
+          api1:
+            client-id: plain_user
+            client-secret: clientSecret
+            authorization-grant-type: client_credentials
+            scope: openid
+          api2:
+            client-id: privileged_user
             client-secret: clientSecret
             authorization-grant-type: client_credentials
             scope: openid
         provider:
-          casum:
-            issuer-uri: https://fabe-31-222-83-252.ngrok.io/cas/oidc
-            token-uri: https://fabe-31-222-83-252.ngrok.io/cas/oauth2.0/token
+          api1:
+            issuer-uri: https://b48b-31-222-83-252.ngrok.io/cas/oidc
+          api2:
+            issuer-uri: https://b48b-31-222-83-252.ngrok.io/cas/oidc
       resourceserver:
         jwt:
           jws-algorithm: RS512

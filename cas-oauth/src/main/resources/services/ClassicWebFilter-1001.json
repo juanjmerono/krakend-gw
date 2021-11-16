@@ -1,0 +1,7 @@
+{
+    "@class": "org.apereo.cas.services.RegexRegisteredService",
+    "serviceId": "^http://rrhh.umes.*",
+    "name": "ClassicWebFilter",
+    "id": 1001,
+    "description": "This service definition authorizes all classic application filter."
+}

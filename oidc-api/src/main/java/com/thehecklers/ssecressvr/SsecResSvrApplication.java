@@ -60,6 +60,9 @@ public class SsecResSvrApplication {
 @Component
 class TokenManager {
 
+    @Value("${CASCLIENT}")
+    private String casClient;
+
     private final OAuth2AuthorizedClientManager authorizedClientManager;
   
     public TokenManager(OAuth2AuthorizedClientManager authorizedClientManager) {
@@ -85,8 +88,8 @@ class TokenManager {
     public String getAccessToken() {
       OAuth2AuthorizeRequest authorizeRequest =
               OAuth2AuthorizeRequest
-                    .withClientRegistrationId("casum")
-                    .principal(createAuthentication("casum"))
+                    .withClientRegistrationId(casClient)
+                    .principal(createAuthentication(casClient))
                     .build();
   
       OAuth2AuthorizedClient authorizedClient =
@@ -169,7 +172,7 @@ class ResourceController {
 
     @GetMapping("/username")
     Map getUserName(@AuthenticationPrincipal Jwt principal) {
-        HashMap<String,String> hmap = new HashMap<String,String>();
+        HashMap<String,Object> hmap = new HashMap<String,Object>();
         hmap.put("server",sName);
         hmap.put("sub",principal.getSubject());
         return hmap;

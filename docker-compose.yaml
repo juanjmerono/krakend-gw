@@ -91,6 +91,7 @@ services:
     image: springboot/oidc-api
     environment:
       - SNAME=SRV1
+      - CASCLIENT=api1
     volumes:
       - ./application_api.yml:/app/config/application.yml
     depends_on:
@@ -102,6 +103,7 @@ services:
     image: springboot/oidc-api
     environment:
       - SNAME=SRV2
+      - CASCLIENT=api2
     volumes:
       - ./application_api.yml:/app/config/application.yml
     depends_on:
