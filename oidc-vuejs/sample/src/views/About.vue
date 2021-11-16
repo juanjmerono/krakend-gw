@@ -7,8 +7,9 @@
         <strong>{{c.key}}</strong>: {{c.value}}</li>
     </ul>
     <input v-model="apipath" placeholder="/resources/hello"><br/>
-    <button v-on:click="miSaludo('xxxx')">Usar Token Incorrecto</button>
-    <button v-on:click="miSaludo('')">Usar Token Correcto</button>
+    <button v-on:click="callAPI(0)">No Usar Token</button>
+    <button v-on:click="callAPI(1)">Usar Token Incorrecto</button>
+    <button v-on:click="callAPI(2)">Usar Token Correcto</button>
     <p>{{ saludo }}</p>
   </div>
 </template>
@@ -21,13 +22,13 @@ export default {
     }
   },
   methods: {
-    miSaludo: function(addBearer) {
+    callAPI: function(useToken) {
       let xhr = new XMLHttpRequest()
       xhr.open("GET", "http://api.umes"+this.apipath, true)
       xhr.setRequestHeader('Content-Type', 'application/json')
       const accessToken = this.user['access_token']
-      if (accessToken) {
-        xhr.setRequestHeader('Authorization', 'Bearer '+ accessToken+addBearer)
+      if (useToken && accessToken) {
+        xhr.setRequestHeader('Authorization', 'Bearer '+ accessToken+(useToken==1?'xxxx':''))
       }
       xhr.onload = () => {
         if (xhr.status === 200) {

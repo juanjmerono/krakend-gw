@@ -2,7 +2,7 @@
     "@class" : "org.apereo.cas.support.oauth.services.OAuthRegisteredService",
     "id" : 100003,
     "name" : "OAuthService",
-    "clientId": "clientId0",
+    "clientId": "clientIdOAuth",
     "clientSecret": "clientSecret",
     "bypassApprovalPrompt": true,
     "generateRefreshToken": false,

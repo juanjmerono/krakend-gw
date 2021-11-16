@@ -14,7 +14,18 @@ logging:
 spring:
   security:
     oauth2:
+      client:
+        registration:
+          casum:
+            client-id: clientId0
+            client-secret: clientSecret
+            authorization-grant-type: client_credentials
+            scope: openid
+        provider:
+          casum:
+            issuer-uri: https://fabe-31-222-83-252.ngrok.io/cas/oidc
+            token-uri: https://fabe-31-222-83-252.ngrok.io/cas/oauth2.0/token
       resourceserver:
         jwt:
           jws-algorithm: RS512
-          jwk-set-uri: https://596c-31-222-83-252.ngrok.io/cas/oidc/jwks
+          jwk-set-uri: http://entrada:8080/cas/oidc/jwks
