@@ -1,10 +1,12 @@
 {
     "endpoints": [
         {
-            "server":"api1"
+            "server": "api1",
+            "dest": "api2"
         },
         {
-            "server":"api2"
+            "server": "api2",
+            "dest": "api1"
         }
     ]
 }

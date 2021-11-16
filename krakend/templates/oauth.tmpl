@@ -33,5 +33,21 @@
         {{ include "oidc_extra_config.tmp" }},
         {{ include "rate_limit_extra_config.tmp" }}
     }
+},
+{
+    "endpoint": "/oauth/remote/{{ $endpoint.server }}/{method}",
+    "headers_to_pass":[ "*" ],
+    "output_encoding": "no-op",
+    "backend": [
+        {
+            "host": "http://{{ $endpoint.server }}:8080",
+            "encoding": "no-op",
+            "url_pattern": "/oauth/remote/{{ $endpoint.dest }}/{method}"
+        }
+    ],
+    "extra_config": {
+        {{ include "oidc_extra_config.tmp" }},
+        {{ include "rate_limit_extra_config.tmp" }}
+    }
 }
 {{ end }}

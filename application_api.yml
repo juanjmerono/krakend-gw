@@ -14,7 +14,16 @@ logging:
 spring:
   security:
     oauth2:
+      client:
+        registration:
+          casum:
+            client-id: clientId0
+            client-secret: clientSecret
+            authorization-grant-type: client_credentials
+        provider:
+          casum:
+            issuer-uri: https://81fd-31-222-83-252.ngrok.io/cas/oidc
       resourceserver:
         jwt:
           jws-algorithm: RS512
-          jwk-set-uri: https://596c-31-222-83-252.ngrok.io/cas/oidc/jwks
+          jwk-set-uri: http://entrada:8080/cas/oidc/jwks
