@@ -2,7 +2,7 @@
     "alg": "RS512",
     "vue-audience": ["http://micampus.umes/auth/signinpop/main"],
     "app-audience": ["http://pkce.umes/login/oauth2/code/casum"],
-    "issuer": "https://0090-31-222-83-252.ngrok.io/cas/oidc",
+    "issuer": "https://fabe-31-222-83-252.ngrok.io/cas/oidc",
     "scopes": ["openid"],
     "scopes_key": "scopes",
     "scopes_matcher": "any",

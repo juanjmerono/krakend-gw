@@ -93,6 +93,9 @@ services:
       - SNAME=SRV1
     volumes:
       - ./application_api.yml:/app/config/application.yml
+    depends_on:
+     entrada:
+        condition: service_healthy
 
   api2:
     build: ./oidc-api
@@ -101,3 +104,6 @@ services:
       - SNAME=SRV2
     volumes:
       - ./application_api.yml:/app/config/application.yml
+    depends_on:
+     entrada:
+        condition: service_healthy

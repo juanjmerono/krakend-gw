@@ -23,8 +23,8 @@ spring:
             scope: openid
         provider:
           casum:
-            issuer-uri: https://0090-31-222-83-252.ngrok.io/cas/oidc
-            token-uri: https://0090-31-222-83-252.ngrok.io/cas/oauth2.0/token
+            issuer-uri: https://fabe-31-222-83-252.ngrok.io/cas/oidc
+            token-uri: https://fabe-31-222-83-252.ngrok.io/cas/oauth2.0/token
       resourceserver:
         jwt:
           jws-algorithm: RS512
