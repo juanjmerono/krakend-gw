@@ -17,7 +17,7 @@
             if (useApi) {
                 location.href='http://api.umes'+document.getElementById('path').value;
             } else {
-                location.href='/remote'+document.getElementById('path').value;
+                location.href='/rrhh/remote'+document.getElementById('path').value;
             }
         }
     </script>

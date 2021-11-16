@@ -1,6 +1,6 @@
 "github.com/devopsfaith/krakend-jose/validator": {
     "alg": "RS512",
-    "issuer": "https://b48b-31-222-83-252.ngrok.io/cas/oidc",
+    "issuer": "https://44f9-31-222-83-252.ngrok.io/cas/oidc",
     "scopes": ["openid"],
     "scopes_key": "scopes",
     "scopes_matcher": "any",
