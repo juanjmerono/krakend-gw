@@ -30,7 +30,7 @@
         {
             "host": "http://{{ $endpoint.server }}:8080",
             "encoding": "no-op",
-            "url_pattern": "/public/{method}",
+            "url_pattern": "/public/{{ $endpoint.server }}/{method}",
             "extra_config": {
                 {{ include "backend_rate_limit_extra_config.tmp" }}
             }

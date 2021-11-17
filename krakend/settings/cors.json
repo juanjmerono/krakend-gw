@@ -1,7 +1,7 @@
 {
     "extra_config" : {
         "github_com/devopsfaith/krakend-cors": {
-            "allow_origins": [ "http://micampus.umes", "http://127.0.0.1:8080" ],
+            "allow_origins": [ "http://micampus.umes", "http://apidocs.umes", "http://127.0.0.1:8080" ],
             "allow_methods": [ "POST", "GET" ],
             "allow_headers": ["Origin","Authorization","Content-Type"],
             "expose_headers": ["Content-Length"],

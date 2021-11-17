@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.thehecklers</groupId>
-    <artifactId>ssec-res-svr</artifactId>
+    <artifactId>ssec-apidoc-svr</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ssec-res-svr</name>
+    <name>ssec-apidoc-svr</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -23,18 +23,9 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webmvc-core</artifactId>
-            <!-- <artifactId>springdoc-openapi-ui</artifactId> -->
+            <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.5.12</version>
         </dependency>
         <dependency>

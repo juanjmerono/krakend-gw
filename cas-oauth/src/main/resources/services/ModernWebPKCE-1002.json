@@ -3,7 +3,7 @@
     "id" : 1002,
     "name" : "ModernWebPKCE",
     "clientId": "clientid",
-    "serviceId": "^http://(pkce|micampus).umes.*",
+    "serviceId": "^http://(pkce|micampus|apidocs).umes.*",
     "bypassApprovalPrompt": true,
     "supportedGrantTypes": [ "java.util.HashSet", [ "authorization_code", "refresh_token" ] ],
     "scopes" : [ "java.util.HashSet", [ "profile", "openid", "email" ] ],

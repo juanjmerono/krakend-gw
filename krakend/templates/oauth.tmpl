@@ -6,7 +6,7 @@
         {{if $idx}},{{end}}
         {
             "host": "http://{{ $endpoint.server }}:8080",
-            "url_pattern": "/oauth/{method}",
+            "url_pattern": "/oauth/{{ $endpoint.server }}/{method}",
             "group": "{{ $endpoint.server }}"
         }
         {{ end }}
@@ -26,7 +26,7 @@
         {
             "host": "http://{{ $endpoint.server }}:8080",
             "encoding": "no-op",
-            "url_pattern": "/oauth/{method}"
+            "url_pattern": "/oauth/{{ $endpoint.server }}/{method}"
         }
     ],
     "extra_config": {
@@ -42,7 +42,7 @@
         {
             "host": "http://{{ $endpoint.server }}:8080",
             "encoding": "no-op",
-            "url_pattern": "/oauth/remote/{{ $endpoint.dest }}/{method}"
+            "url_pattern": "/oauth/{{ $endpoint.server }}/remote/{{ $endpoint.dest }}/{method}"
         }
     ],
     "extra_config": {

@@ -1,0 +1,29 @@
+server:
+  forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+    protocol-header: x-forwarded-proto
+    remote-ip-header: x-forwarded-for
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /
+    configUrl: /swagger-ui/swagger-config.json
+    oauth2RedirectUrl: /swagger-ui/oauth2-redirect.html
+    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
+    display-request-duration: true
+    oauth:      
+      usePkceWithAuthorizationCodeGrant: true
+      clientId: clientid
+
+endpoints:
+  - name: MY_API_1
+    url: /swagger-ui/api-docs/api1
+  - name: MY_API_2
+    url: /swagger-ui/api-docs/api2

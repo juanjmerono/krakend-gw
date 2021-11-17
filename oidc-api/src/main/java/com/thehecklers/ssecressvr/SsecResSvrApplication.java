@@ -4,10 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -27,18 +23,9 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.ClientRegistrations;
-import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
@@ -48,6 +35,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.OAuthFlow;
+import io.swagger.v3.oas.annotations.security.OAuthFlows;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.security.SecuritySchemes;
+import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@OpenAPIDefinition (
+    info = @Info(title = "Sample API (${SNAME})", version = "0.0", description = "This is a sample API for testing public endpoints."),
+    servers = { @Server(url="http://api.umes/") }
+)
+@SecuritySchemes({
+    @SecurityScheme(
+        name = "OAuthUser",
+        type = SecuritySchemeType.OPENIDCONNECT,
+        flows = @OAuthFlows( authorizationCode = @OAuthFlow(tokenUrl = "${spring.security.oauth2.client.provider.api1.issuer-uri}/accessToken")),
+        openIdConnectUrl = "${spring.security.oauth2.client.provider.api1.issuer-uri}/.well-known/openid-configuration"
+    )
+})
 @SpringBootApplication
 public class SsecResSvrApplication {
 
@@ -130,6 +143,7 @@ class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
             .oauth2Client();
         http
             .authorizeRequests()
+            .mvcMatchers("/api-docs/**").permitAll()
 			.mvcMatchers("/public/**").permitAll()
             .mvcMatchers(HttpMethod.GET, "/oauth/**").hasAuthority("SCOPE_openid")
             .anyRequest()
@@ -140,21 +154,30 @@ class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/public/${SNAME}")
 class PublicResourceController {
 
     @Value("${SNAME}")
     private String sName;
 
+    @Operation(summary = "Get hello world public message.", 
+            description = "Get a public message with serverId.",
+            tags = {"Public"},
+            responses = { 
+                @ApiResponse(responseCode = "200",
+                            description="Hi message",
+                            content= @Content(schema=@Schema(implementation=Map.class)))
+            })
     @GetMapping("/hello")
     Map<String,String> getHello() {
-        return (Map<String, String>) Collections.singletonMap("response", "PUBLIC ["+sName+"]");
+        return (Map<String, String>) Collections.singletonMap("response", "PUBLIC HELLO WORLD ["+sName+"]");
     }
 
 }
 
 @RestController
-@RequestMapping("/oauth")
+@SecurityRequirement(name = "OAuthUser")
+@RequestMapping("/oauth/${SNAME}")
 class ResourceController {
 
     private static final String AUTHORIZATION = "Authorization";
@@ -165,11 +188,27 @@ class ResourceController {
     @Value("${SNAME}")
     private String sName;
 
+    @Operation(summary = "Get hello world private message.", 
+            description = "Get a private hello world message with serverId.",
+            tags = {"OAuth"},
+            responses = { 
+                @ApiResponse(responseCode = "200",
+                            description="Hi message",
+                            content= @Content(schema=@Schema(implementation=Map.class)))
+            })
     @GetMapping("/hello")
     Map<String,String> getHello() {
         return (Map<String, String>) Collections.singletonMap("response", "HELLO WORLD ["+sName+"]");
     }
 
+    @Operation(summary = "Get username from access token and serverId.", 
+            description = "Get username from access token and serverId.",
+            tags = {"OAuth"},
+            responses = { 
+                @ApiResponse(responseCode = "200",
+                            description="Server and username.",
+                            content= @Content(schema=@Schema(implementation=Map.class)))
+            })
     @GetMapping("/username")
     Map getUserName(@AuthenticationPrincipal Jwt principal) {
         HashMap<String,Object> hmap = new HashMap<String,Object>();
@@ -178,9 +217,17 @@ class ResourceController {
         return hmap;
     }
 
+    @Operation(summary = "Get response from a remote API via Clien Credentials.", 
+            description = "Get response from a remote API via Clien Credentials.",
+            tags = {"OAuth"},
+            responses = { 
+                @ApiResponse(responseCode = "200",
+                            description="Server and username.",
+                            content= @Content(schema=@Schema(implementation=Map.class)))
+            })
 	@GetMapping("/remote/{server}/{method}")
 	String getFromServer(@PathVariable("server") String server,
-						 @PathVariable("method") String method) {
+                         @PathVariable("method") String method) {
         
         String rootPath = "__debug".equals(method)?"__debug":"oauth";
         String finalServer = "__debug".equals(method)?"apigateway":server;
