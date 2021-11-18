@@ -6,15 +6,20 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +39,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import lombok.Data;
 
 
 @OpenAPIDefinition (
@@ -45,7 +50,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
     @SecurityScheme(
         name = "OAuthUser",
         type = SecuritySchemeType.OPENIDCONNECT,
-        flows = @OAuthFlows( authorizationCode = @OAuthFlow(tokenUrl = "${oauth.issuer-uri}/accessToken")),
+        flows = @OAuthFlows( authorizationCode = @OAuthFlow(tokenUrl = "${oauth.issuer-uri}/accessToken") ),
         openIdConnectUrl = "${oauth.issuer-uri}/.well-known/openid-configuration"
     ),
     @SecurityScheme(
@@ -63,53 +68,45 @@ public class SsecApiDocSvrApplication {
 
 }
 
-class YamlPropertySourceFactory implements PropertySourceFactory {
-
-    @Override
-    public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource) 
-      throws IOException {
-        YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
-        factory.setResources(encodedResource.getResource());
-
-        Properties properties = factory.getObject();
-
-        return new PropertiesPropertySource(encodedResource.getResource().getFilename(), properties);
-    }
+@Controller
+class RootController {
+    // SwaggerUI is not adding context in redirect-uri this is a hack
+	@GetMapping("/oauth2-redirect.html")
+	String index() {
+		return "redirect.html";
+	}
 }
 
+@Data
+@Component
+@ConfigurationProperties(prefix = "endpoints")
 class SwaggerUrlsConfig {
-
     private List<SwaggerUrl> urls;
 
+    @Data
     public static class SwaggerUrl {
-        private String url;
         private String name;
-        public SwaggerUrl(String name, String url) {
-            this.url = url; this.name = name;
-        }
-        public String getUrl() { return this.url; }
-        public String getName() { return this.name; }
+        private String url;
     }
 
-    public SwaggerUrlsConfig(List<SwaggerUrl> urls) {
-        this.urls = urls;
-    }
-
-    public List<SwaggerUrl> getUrls() { return urls; }
 }
 
 @RestController
 @RequestMapping("/swagger-ui")
 class ApiDocResourceController {
 
+    @Autowired
+    private SwaggerUrlsConfig swaggerUrlsConfig;
+
     @Operation(hidden = true, description = "Swagger Configuration Files")
     @GetMapping("/swagger-config.json")
-    SwaggerUrlsConfig swaggerConfig() {
-        List<SwaggerUrlsConfig.SwaggerUrl> urls = new ArrayList<SwaggerUrlsConfig.SwaggerUrl>();
+    SwaggerUrlsConfig getSwaggerConfig() {
+        return swaggerUrlsConfig;
+        /*List<SwaggerUrlsConfig.SwaggerUrl> urls = new ArrayList<SwaggerUrlsConfig.SwaggerUrl>();
         urls.add(new SwaggerUrlsConfig.SwaggerUrl("COMPOSED","/api-docs"));
         urls.add(new SwaggerUrlsConfig.SwaggerUrl("API1","/swagger-ui/api-docs/api1"));
         urls.add(new SwaggerUrlsConfig.SwaggerUrl("API2","/swagger-ui/api-docs/api2"));
-        return new SwaggerUrlsConfig(urls);
+        return new SwaggerUrlsConfig(urls);*/
     }
 
     @Operation(hidden = true, description = "Proxy to backend apidocs")

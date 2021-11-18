@@ -102,7 +102,7 @@ class OidcController {
 						 @PathVariable("type") String type, 
 						 @PathVariable("method") String method) {
 		return client.get()
-				.uri("http://"+server+":8080/"+type+"/"+method)
+				.uri("http://"+server+":8080/"+type+"/"+server+"/"+method)
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();

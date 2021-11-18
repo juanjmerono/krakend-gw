@@ -237,7 +237,7 @@ class ResourceController {
         HttpEntity<Void> request = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "http://"+finalServer+":8080/"+rootPath+"/"+method, 
+                "http://"+finalServer+":8080/"+rootPath+"/"+server+"/"+method, 
                 HttpMethod.GET, request, String.class)
                 .getBody();
 	}

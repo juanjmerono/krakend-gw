@@ -61,7 +61,7 @@ public class RemoteServlet extends HttpServlet {
         try {
             String [] parts = pathInfo.split("/");
             if (parts.length != 4) throw new Exception("Path incorrecto: "+pathInfo);
-            URL url = new URL("http://"+parts[2]+":8080/"+parts[1]+"/"+parts[3]);
+            URL url = new URL("http://"+parts[2]+":8080/"+parts[1]+"/"+parts[2]+"/"+parts[3]);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
             connection.setDoOutput(true);

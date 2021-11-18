@@ -17,15 +17,25 @@ springdoc:
   swagger-ui:
     path: /
     configUrl: /swagger-ui/swagger-config.json
-    oauth2RedirectUrl: /swagger-ui/oauth2-redirect.html
-    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
+    #oauth2RedirectUrl: http://apidocs.umes/swagger-ui/oauth2-redirect.html
+    #oauth2-redirect-url: http://apidocs.umes/swagger-ui/oauth2-redirect.html
     display-request-duration: true
     oauth:      
       usePkceWithAuthorizationCodeGrant: true
       clientId: clientid
 
 oauth:
-  issuer-uri: https://8e74-31-222-83-252.ngrok.io/cas/oidc
+  issuer-uri: https://8463-31-222-83-252.ngrok.io/cas/oidc
 
 endpoints:
   gateway-url: http://api.umes/
+  urls:
+    -
+      name: krakend-service
+      url: /api-docs
+    -
+      name: api1-service
+      url: /swagger-ui/api-docs/api1
+    -
+      name: api2-service
+      url: /swagger-ui/api-docs/api2
