@@ -90,6 +90,7 @@
 <ul>
     <li><a href="http://pkce.umes/">Go to modern app</a></li>
     <li><a href="http://micampus.umes/">Go to frontend app</a></li>
+    <li><a href="http://apidocs.umes/">Go to apidocs</a></li>
 </ul>
 
 </body>

@@ -51,7 +51,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @OpenAPIDefinition (
     info = @Info(title = "Sample API (${SNAME})", version = "0.0", description = "This is a sample API for testing public endpoints."),
-    servers = { @Server(url="http://api.umes/") }
+    servers = { @Server(url="${endpoints.gateway-url}") }
 )
 @SecuritySchemes({
     @SecurityScheme(
@@ -210,8 +210,8 @@ class ResourceController {
                             content= @Content(schema=@Schema(implementation=Map.class)))
             })
     @GetMapping("/username")
-    Map getUserName(@AuthenticationPrincipal Jwt principal) {
-        HashMap<String,Object> hmap = new HashMap<String,Object>();
+    Map<String,String> getUserName(@AuthenticationPrincipal Jwt principal) {
+        HashMap<String,String> hmap = new HashMap<String,String>();
         hmap.put("server",sName);
         hmap.put("sub",principal.getSubject());
         return hmap;

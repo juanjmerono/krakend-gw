@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
+      <a href="http://apidocs.umes/">Go to apidocs</a> |
       <a href="http://rrhh.umes/rrhh">Go to classic app</a> |
       <a href="http://pkce.umes/">Go to modern app</a> |
       <router-link to="/">Home</router-link> |

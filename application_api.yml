@@ -28,9 +28,9 @@ spring:
             scope: openid
         provider:
           api1:
-            issuer-uri: https://6a25-31-222-83-252.ngrok.io/cas/oidc
+            issuer-uri: https://8e74-31-222-83-252.ngrok.io/cas/oidc
           api2:
-            issuer-uri: https://6a25-31-222-83-252.ngrok.io/cas/oidc
+            issuer-uri: https://8e74-31-222-83-252.ngrok.io/cas/oidc
       resourceserver:
         jwt:
           jws-algorithm: RS512
@@ -40,3 +40,5 @@ springdoc:
   api-docs:
     path: /api-docs
 
+endpoints:
+  gateway-url: http://api.umes/
