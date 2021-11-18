@@ -47,6 +47,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
         type = SecuritySchemeType.OPENIDCONNECT,
         flows = @OAuthFlows( authorizationCode = @OAuthFlow(tokenUrl = "${oauth.issuer-uri}/accessToken")),
         openIdConnectUrl = "${oauth.issuer-uri}/.well-known/openid-configuration"
+    ),
+    @SecurityScheme(
+        name = "BasicAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "basic"
     )
 })
 @SpringBootApplication
@@ -175,6 +180,19 @@ class ApiDocComposedResourceController {
         return null;
     }
 
+    @Operation(summary = "Get some private legacy message.", 
+            description = "Get a private legacy message from outside.",
+            tags = {"Legacy"},
+            security = { @SecurityRequirement(name = "BasicAuth") },
+            responses = { 
+                @ApiResponse(responseCode = "200",
+                            description="Response message",
+                            content= @Content(schema=@Schema(implementation=Map.class)))
+            })
+    @GetMapping("/private/rrhh/hello")
+    String fakeApiEndpoint4() {
+        return null;
+    }
 }
 
 

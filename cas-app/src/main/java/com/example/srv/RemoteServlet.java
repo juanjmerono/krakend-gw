@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
