@@ -1,5 +1,6 @@
 package com.thehecklers.ssecoidc;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -81,6 +82,10 @@ class OidcWController {
 
 @RestController
 class OidcController {
+
+	@Value("${apigateway.url}")
+	private String gatewayUrl;
+
 	private final WebClient client;
 
 	public OidcController(WebClient client) {
@@ -102,7 +107,7 @@ class OidcController {
 						 @PathVariable("type") String type, 
 						 @PathVariable("method") String method) {
 		return client.get()
-				.uri("http://"+server+":8080/"+type+"/"+server+"/"+method)
+				.uri(gatewayUrl+"/"+type+"/"+server+"/"+method)
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();

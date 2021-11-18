@@ -188,6 +188,9 @@ class ResourceController {
     @Value("${SNAME}")
     private String sName;
 
+    @Value("${apigateway.url}")
+    private String gatewayUrl;
+
     @Operation(summary = "Get hello world private message.", 
             description = "Get a private hello world message with serverId.",
             tags = {"OAuth"},
@@ -229,15 +232,12 @@ class ResourceController {
 	String getFromServer(@PathVariable("server") String server,
                          @PathVariable("method") String method) {
         
-        String rootPath = "__debug".equals(method)?"__debug":"oauth";
-        String finalServer = "__debug".equals(method)?"apigateway":server;
-
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + tokenManager.getAccessToken());
         HttpEntity<Void> request = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "http://"+finalServer+":8080/"+rootPath+"/"+server+"/"+method, 
+                gatewayUrl+"/oauth/"+server+"/"+method, 
                 HttpMethod.GET, request, String.class)
                 .getBody();
 	}

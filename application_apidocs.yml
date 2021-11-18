@@ -25,7 +25,7 @@ springdoc:
       clientId: clientid
 
 oauth:
-  issuer-uri: https://8463-31-222-83-252.ngrok.io/cas/oidc
+  issuer-uri: https://3c03-31-222-83-252.ngrok.io/cas/oidc
 
 endpoints:
   gateway-url: http://api.umes/
@@ -33,9 +33,12 @@ endpoints:
     -
       name: krakend-service
       url: /api-docs
+      privateurl: .
     -
       name: api1-service
-      url: /swagger-ui/api-docs/api1
+      url: /swagger-ui/api-docs/api1-service
+      privateurl: http://api1:8080/api-docs/
     -
       name: api2-service
-      url: /swagger-ui/api-docs/api2
+      url: /swagger-ui/api-docs/api2-service
+      privateurl: http://api2:8080/api-docs/

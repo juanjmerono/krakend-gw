@@ -1,21 +1,12 @@
 package com.thehecklers.ssecressvr;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.io.support.EncodedResource;
-import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -87,6 +78,7 @@ class SwaggerUrlsConfig {
     public static class SwaggerUrl {
         private String name;
         private String url;
+        private String privateurl;
     }
 
 }
@@ -102,20 +94,15 @@ class ApiDocResourceController {
     @GetMapping("/swagger-config.json")
     SwaggerUrlsConfig getSwaggerConfig() {
         return swaggerUrlsConfig;
-        /*List<SwaggerUrlsConfig.SwaggerUrl> urls = new ArrayList<SwaggerUrlsConfig.SwaggerUrl>();
-        urls.add(new SwaggerUrlsConfig.SwaggerUrl("COMPOSED","/api-docs"));
-        urls.add(new SwaggerUrlsConfig.SwaggerUrl("API1","/swagger-ui/api-docs/api1"));
-        urls.add(new SwaggerUrlsConfig.SwaggerUrl("API2","/swagger-ui/api-docs/api2"));
-        return new SwaggerUrlsConfig(urls);*/
     }
 
     @Operation(hidden = true, description = "Proxy to backend apidocs")
-    @GetMapping("/api-docs/{server}")
-    String getServerApiDocs(@PathVariable("server") String server) {
+    @GetMapping("/api-docs/{service}")
+    String getServerApiDocs(@PathVariable("service") String service) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Void> request = new HttpEntity<>(null);
         return restTemplate.exchange(
-                "http://"+server+":8080/api-docs/", 
+                swaggerUrlsConfig.getUrls().stream().filter(u->service.equals(u.getName())).findFirst().get().getPrivateurl(), 
                 HttpMethod.GET, request, String.class)
                 .getBody();
     }
