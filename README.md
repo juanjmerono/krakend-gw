@@ -44,7 +44,6 @@ La demo contiene:
 - Una instancia de identity provider en este caso CAS 6.3.7 alojada en el puerto 8001 usa ngrok para https
 - Una instancia de una aplicación con uso de filtro cas tradicional en rrhh.umes/rrhh
 - Una instancia de una aplicación front vuejs en micampus.umes que invoca a las apis
-- Una instancia de un apigateway en api.umes que protege las apis
 
 Todas las APIs está escondidas detrás del gateway inaccesibles desde el exterior.
 

@@ -14,7 +14,7 @@
         <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
         <init-param>
             <param-name>casServerUrlPrefix</param-name>
-            <param-value>https://3c03-31-222-83-252.ngrok.io/cas</param-value>
+            <param-value>https://8a9f-31-222-83-252.ngrok.io/cas</param-value>
         </init-param>
     </filter>
 
@@ -28,7 +28,7 @@
         <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
         <init-param>
             <param-name>casServerLoginUrl</param-name>
-            <param-value>https://3c03-31-222-83-252.ngrok.io/cas/login</param-value>
+            <param-value>https://8a9f-31-222-83-252.ngrok.io/cas/login</param-value>
         </init-param>
         <init-param>
             <param-name>serverName</param-name>
@@ -120,7 +120,7 @@
         <servlet-class>com.example.srv.RemoteServlet</servlet-class>
         <init-param>
             <param-name>token-uri</param-name>
-            <param-value>https://3c03-31-222-83-252.ngrok.io/cas/oidc/accessToken</param-value>
+            <param-value>https://8a9f-31-222-83-252.ngrok.io/cas/oidc/accessToken</param-value>
         </init-param>
         <init-param>
             <param-name>client-id</param-name>
@@ -132,7 +132,7 @@
         </init-param>
         <init-param>
             <param-name>gateway-url</param-name>
-            <param-value>http://apigateway:8080</param-value>
+            <param-value>http://api.umes</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

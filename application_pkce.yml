@@ -8,7 +8,7 @@ spring:
             client-secret: thisisnotused
         provider:
           casum:
-            issuer-uri: https://3c03-31-222-83-252.ngrok.io/cas/oidc
+            issuer-uri: https://8a9f-31-222-83-252.ngrok.io/cas/oidc
 
 server:
   forward-headers-strategy: native
@@ -18,4 +18,4 @@ server:
     remote-ip-header: x-forwarded-for
 
 apigateway:
-  url: "http://apigateway:8080"
+  url: "http://api.umes"

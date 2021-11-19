@@ -4,9 +4,6 @@ services:
   entrada:
     build: ./cas-oauth
     image: apereo/cas-oauth
-    # environment:
-    #   - VIRTUAL_HOST=entrada.umes
-    #   - VIRTUAL_PORT=8080
     ports:
       - "8001:8080"
     volumes:
@@ -19,43 +16,34 @@ services:
 
   # Reverse proxy to access different backends
   proxy:
-    image: jwilder/nginx-proxy
+    image: traefik:v2.5
     ports:
       - "80:80"
+      - "8080:8080"
+    command:
+      # - "--log.level=DEBUG"
+      - "--api"
+      - "--api.dashboard"
+      - "--api.insecure" # Don't do that in production
+      - "--providers.docker"
+      - "--entrypoints.web.address=:80"
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    depends_on:
-      - front
-      - rrhh
-      - pkce
-      - apigateway
-
-  # Krakend in front of all APIs
-  apigateway:
-    image: devopsfaith/krakend:1.4.1
-    command: [ "run", "-d", "-c", "/etc/krakend/krakend.json"]
-    environment:
-      - VIRTUAL_HOST=api.umes
-      - VIRTUAL_PORT=8080
-      - FC_ENABLE=1
-      - FC_SETTINGS=/etc/krakend/settings
-      - FC_PARTIALS=/etc/krakend/partials
-      - FC_TEMPLATES=/etc/krakend/templates
-    volumes:
-      - ./krakend/settings:/etc/krakend/settings
-      - ./krakend/partials:/etc/krakend/partials
-      - ./krakend/templates:/etc/krakend/templates
-      - ./krakend/krakend.json:/etc/krakend/krakend.json
-
-  # API Gateway Docs
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+    networks:
+      default:
+        aliases:
+          - api.umes
+          
+  # API Docs
   apidocs:
     build: ./api-docs
     image: springboot/api-docs
-    # ports:
-    #   - "8081:8080"
-    environment:
-      - VIRTUAL_HOST=apidocs.umes
-      - VIRTUAL_PORT=8080
+    labels:
+      - "traefik.http.routers.apidocs.rule=Host(`apidocs.umes`)"
+      - "traefik.http.services.apidocs.loadbalancer.server.port=8080"
     volumes:
       - ./application_apidocs.yml:/app/config/application.yml
     depends_on:
@@ -66,9 +54,9 @@ services:
   front:
     build: ./oidc-vuejs
     image: vuejs/oidc
-    environment:
-      - VIRTUAL_HOST=micampus.umes
-      - VIRTUAL_PORT=8080
+    labels:
+      - "traefik.http.routers.front.rule=Host(`micampus.umes`)"
+      - "traefik.http.services.front.loadbalancer.server.port=8080"
     depends_on:
       entrada:
         condition: service_healthy
@@ -77,9 +65,9 @@ services:
   rrhh:
     build: ./cas-app
     image: casfilter/cas
-    environment:
-      - VIRTUAL_HOST=rrhh.umes
-      - VIRTUAL_PORT=8080
+    labels:
+      - "traefik.http.routers.rrhh.rule=Host(`rrhh.umes`)"
+      - "traefik.http.services.rrhh.loadbalancer.server.port=8080"
     depends_on:
       entrada:
         condition: service_healthy
@@ -88,9 +76,9 @@ services:
   pkce:
     build: ./oidc-pkce
     image: springboot/oidc-pkce
-    environment:
-      - VIRTUAL_HOST=pkce.umes
-      - VIRTUAL_PORT=8080
+    labels:
+      - "traefik.http.routers.pkce.rule=Host(`pkce.umes`)"
+      - "traefik.http.services.pkce.loadbalancer.server.port=8080"
     volumes:
       - ./application_pkce.yml:/app/config/application.yml
     depends_on:
@@ -103,6 +91,15 @@ services:
   api1:
     build: ./oidc-api
     image: springboot/oidc-api
+    labels:
+      - "traefik.http.routers.api1.rule=Host(`api.umes`) && (PathPrefix(`/oauth/api1/`) || PathPrefix(`/public/api1/`))"
+      - "traefik.http.services.api1.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api1.middlewares=corsHeader" 
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=http://apidocs.umes,http://micampus.umes"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.corsHeader.headers.addvaryheader=true"
     environment:
       - SNAME=api1
       - CASCLIENT=api1
@@ -115,6 +112,15 @@ services:
   api2:
     build: ./oidc-api
     image: springboot/oidc-api
+    labels:
+      - "traefik.http.routers.api2.rule=Host(`api.umes`) && (PathPrefix(`/oauth/api2/`) || PathPrefix(`/public/api2/`))"
+      - "traefik.http.services.api2.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api2.middlewares=corsHeader" 
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=http://apidocs.umes,http://micampus.umes"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.corsHeader.headers.addvaryheader=true"
     environment:
       - SNAME=api2
       - CASCLIENT=api2
