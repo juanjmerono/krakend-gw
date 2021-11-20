@@ -1,0 +1,11 @@
+{
+    "@class" : "org.apereo.cas.services.OidcRegisteredService",
+    "id" : 1005,
+    "name" : "ModernWebPKCEOpaque",
+    "clientId": "clientidopaque",
+    "serviceId": "^(https|http)://.*",
+    "bypassApprovalPrompt": true,
+    "supportedGrantTypes": [ "java.util.HashSet", [ "authorization_code", "refresh_token" ] ],
+    "scopes" : [ "java.util.HashSet", [ "profile", "openid", "email" ] ],
+    "generateRefreshToken": true
+}
