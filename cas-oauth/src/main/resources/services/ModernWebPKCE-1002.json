@@ -8,5 +8,6 @@
     "supportedGrantTypes": [ "java.util.HashSet", [ "authorization_code", "refresh_token" ] ],
     "scopes" : [ "java.util.HashSet", [ "profile", "openid", "email" ] ],
     "generateRefreshToken": true,
+    "renewRefreshToken": true,
     "jwtAccessToken": true
 }
