@@ -1,0 +1,18 @@
+server:
+  forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+    protocol-header: x-forwarded-proto
+    remote-ip-header: x-forwarded-for
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+spring:
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true

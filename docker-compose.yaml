@@ -129,3 +129,47 @@ services:
     depends_on:
      entrada:
         condition: service_healthy
+
+
+  newapi:
+    build: ./new-api
+    image: yoanyo/springboot-oidc-api:1.0
+    labels:
+      - "traefik.http.routers.api1.rule=Host(`api.umes`) && (PathPrefix(`/oauth/api1/`) || PathPrefix(`/public/api1/`))"
+      - "traefik.http.services.api1.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api1.middlewares=corsHeader" 
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=http://apidocs.umes,http://micampus.umes"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.corsHeader.headers.addvaryheader=true"
+    environment:
+      - SNAME=api1
+      - CASCLIENT=api1
+    volumes:
+      - ./application_api.yml:/app/config/application.yml
+    depends_on:
+     entrada:
+        condition: service_healthy
+
+
+  dapi:
+    build: ./discover-api
+    image: yoanyo/springboot-discover-api:1.0
+    labels:
+      - "traefik.http.routers.api1.rule=Host(`api.umes`) && (PathPrefix(`/oauth/api1/`) || PathPrefix(`/public/api1/`))"
+      - "traefik.http.services.api1.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api1.middlewares=corsHeader" 
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=http://apidocs.umes,http://micampus.umes"
+      - "traefik.http.middlewares.corsHeader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.corsHeader.headers.addvaryheader=true"
+    environment:
+      - SNAME=api1
+      - CASCLIENT=api1
+    volumes:
+      - ./application_api.yml:/app/config/application.yml
+    depends_on:
+     entrada:
+        condition: service_healthy

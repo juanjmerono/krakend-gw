@@ -1,0 +1,22 @@
+server:
+  forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+    protocol-header: x-forwarded-proto
+    remote-ip-header: x-forwarded-for
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+endpoints:
+  gateway-url: http://api.umes/
+
+apigateway:
+  url: "http://api.umes"
